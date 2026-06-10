@@ -11,18 +11,14 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "books")
-public class Book {
-
+@Table(name="users")
+public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-
-	private String title;
-
-	private String author;
-	private String detail;
-	// 0で貸し出し可能, 1で貸し出し中
-	private Integer status;
+	
+	private String name;
+	
+	private String password;
 
 }
