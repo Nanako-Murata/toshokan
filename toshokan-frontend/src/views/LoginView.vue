@@ -1,15 +1,42 @@
 <template>
-  <div>
-    <h1>Login</h1>
+  <div class="login-container">
+    <div class="login-card">
 
-    <input v-model="name" placeholder="name" />
-    <input v-model="password" type="password" placeholder="password" />
+      <h2>Login</h2>
 
-    <button @click="login">Login</button>
-    <button @click="goSignup">Signup</button>
+      <form @submit.prevent="login">
+
+        <input
+          v-model="username"
+          type="text"
+          placeholder="username"
+          autocomplete="username"
+        />
+
+        <input
+          v-model="password"
+          type="password"
+          placeholder="password"
+          autocomplete="current-password"
+        />
+
+        <button type="submit">
+          Login
+        </button>
+
+      </form>
+
+      <p v-if="error" class="error">
+        {{ error }}
+      </p>
+
+      <button class="link" type="button" @click="goSignup">
+        Create account
+      </button>
+
+    </div>
   </div>
 </template>
-
 <script setup>
 import { ref } from "vue"
 import axios from "axios"
@@ -17,19 +44,26 @@ import { useRouter } from "vue-router"
 
 const router = useRouter()
 
-const name = ref("")
+const username = ref("")
 const password = ref("")
 
 const login = async () => {
-  const res = await axios.post("http://localhost:8080/login", {
-    name: name.value,
-    password: password.value
-  })
+  try {
+    const res = await axios.post(
+      "http://localhost:8080/login",
+      {
+        username: username.value,
+        password: password.value
+      },
+      { withCredentials: true }
+    )
 
-  if (res.data === true) {
+    console.log("ログイン成功:", res.data)
+
     router.push("/books")
-  } else {
-    alert("ログイン失敗")
+
+  } catch (e) {
+    console.error("ログイン失敗:", e)
   }
 }
 

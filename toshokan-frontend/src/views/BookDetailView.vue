@@ -1,10 +1,14 @@
 <template>
-  <div>
-    <h1>{{ book?.title }}</h1>
-    <p>{{ book?.author }}</p>
-    <p>{{ book?.detail }}</p>
+  <div v-if="book">
+    <h1>{{ book.title }}</h1>
+    <p>{{ book.author }}</p>
+    <p>{{ book.detail }}</p>
 
     <button @click="borrow">借りる</button>
+  </div>
+
+  <div v-else>
+    <p>読み込み中...</p>
   </div>
 </template>
 
@@ -17,15 +21,27 @@ const route = useRoute()
 const book = ref(null)
 
 onMounted(async () => {
-  const res = await axios.get(`http://localhost:8080/books/${route.params.id}`)
-  book.value = res.data
+  try {
+    const res = await axios.get(
+      `http://localhost:8080/books/${route.params.id}`
+    )
+    book.value = res.data
+    console.log("BOOK:", res.data)
+  } catch (err) {
+    console.error("取得失敗:", err)
+  }
 })
 
 const borrow = async () => {
-  const res = await axios.post("http://localhost:8080/loans/borrow", {
-    bookId: route.params.id
-  })
+  try {
+    await axios.post("http://localhost:8080/loans/borrow", {
+      bookId: route.params.id
+    })
 
-  alert(res.data ? "貸出成功" : "貸出不可")
+    alert("貸出成功")
+  } catch (err) {
+    console.error(err)
+    alert("貸出不可")
+  }
 }
 </script>
