@@ -12,10 +12,6 @@ import com.example.toshokan.entity.User;
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
 	public Page<Loan> findByUser(User user, Pageable pageablle);
 
-	public Page<Loan> findByUserAndReturnDateIsNull(User user);
-
-	public Page<Loan> findByUser(User user);
-
 	public Page<Loan> findByUserAndReturnDateIsNull(User user, Pageable pageable);
 
 	public Page<Loan> findByUserAndReturnDateIsNotNull(User user, Pageable pageable);

@@ -8,10 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.toshokan.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer>{
-	public User findByNameAndPassword(String name, String password);
-//	public User findById(Integer id);
-	
+public interface UserRepository extends JpaRepository<User, Integer>{	
 	public Optional<User> findByName(String name);
 
 }

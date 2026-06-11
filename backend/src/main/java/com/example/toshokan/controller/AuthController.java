@@ -17,9 +17,14 @@ public class AuthController {
 		this.userService=userService;
 	}
 	
-	@PostMapping("/login")
+	@PostMapping("/api/login")
 	public boolean login(@RequestBody LoginRequest request) {
 		return userService.check(request.getName(), request.getPassword());
+	}
+	
+	@PostMapping("/signup")
+	public void signup(@RequestBody LoginRequest request) {
+		userService.signup(request.getName(), request.getPassword());
 	}
 
 }

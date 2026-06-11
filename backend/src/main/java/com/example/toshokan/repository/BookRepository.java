@@ -13,13 +13,12 @@ import com.example.toshokan.entity.Book;
 public interface BookRepository extends JpaRepository<Book, Integer>{
 	public Page<Book> findAll(Pageable pageable);
 	
-	@Query
-	("""
-			select b from book b
-			where b.title like %:keyword%
-			or b.author like %:keyword%
-			or b.detail like  %:keyword%
+	@Query("""
+			select b from Book b
+			where b.title like concat('%', :keyword, '%')
+			or b.author like concat('%', :keyword, '%')
+			or b.detail like concat('%', :keyword, '%')
 			""")
-	public Page<Book> search(@Param("keyword") String keyword, Pageable pageable); 
-
+			Page<Book> search(@Param("keyword") String keyword,
+			                  Pageable pageable);
 }
