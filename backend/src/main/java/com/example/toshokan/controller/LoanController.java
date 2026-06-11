@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.toshokan.entity.Loan;
@@ -20,16 +19,28 @@ public class LoanController {
 	public LoanController(LoanService loanService) {
 		this.loanService=loanService;
 	}
-	
+	//今借りてる本一覧
 	@GetMapping("/loans/current")
-	public Page<Loan> currentLoans(@RequestParam Integer userId, Pageable pageable){
-		return loanService.getCurrentLoans(userId, pageable);
+	public Page<Loan> currentLoans(Pageable pageable){
+		return loanService.getCurrentLoans(pageable);
 	
 	}
 	
-	@PostMapping("/loans/{id}/return")
-	public void return (@PathVariable Integer id) {
-		loanService.return(id);
+	//過去に借りた本一覧
+	@GetMapping("/loans/history")
+	public Page<Loan> history(Pageable pageable){
+		return loanService.getHistory(pageable);
+	}
+	
+	//貸し出し処理
+	@PostMapping("/book/{bookId}/borrow")
+	public boolean borrowBook(@PathVariable Integer bookId) {
+		return loanService.borrowBook(bookId);
+	}
+	//返却処理
+	@PostMapping("/loan/{loanId}/return")
+	public void returnBook(@PathVariable Integer bookId) {
+		loanService.returnBook(bookId);
 	}
 
 
