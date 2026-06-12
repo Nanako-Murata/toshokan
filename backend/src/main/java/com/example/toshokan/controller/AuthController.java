@@ -48,6 +48,7 @@ public class AuthController {
 				SecurityContextHolder.getContext());
 
 		return ResponseEntity.ok(user);
+		
 //		SecurityContext context = SecurityContextHolder.createEmptyContext();
 //		context.setAuthentication(auth);
 //		SecurityContextHolder.setContext(context);

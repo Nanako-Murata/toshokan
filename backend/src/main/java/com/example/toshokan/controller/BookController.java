@@ -46,11 +46,7 @@ public class BookController {
 	
 	//本一覧を検索
 	@GetMapping("/books/search")
-	public Page<Book> search(@RequestParam String keyword, Pageable pageable, HttpSession session){
-		if(session.getAttribute("LOGIN_USER")==null
-				) {
-			throw new RuntimeException("NOT LOGIN");
-		}
+	public Page<Book> search(@RequestParam String keyword, Pageable pageable){
 		return bookService.search(keyword, pageable);
 	}
 
