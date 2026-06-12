@@ -15,6 +15,13 @@ public class BookService {
 	public BookService(BookRepository bookRepository) {
 		this.bookRepository=bookRepository;
 	}
+	
+	public Page<Book> search(String keyword, Pageable pageable){
+		if(keyword ==null || keyword.isBlank()) {
+			return bookRepository.findAll(pageable);
+		}
+		return bookRepository.search(keyword, pageable);
+	}
 
 
 }

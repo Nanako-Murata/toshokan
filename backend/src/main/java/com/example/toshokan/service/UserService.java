@@ -1,7 +1,5 @@
 package com.example.toshokan.service;
 
-import java.util.Optional;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,25 +10,48 @@ import com.example.toshokan.repository.UserRepository;
 public class UserService {
 	private UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+
 	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-		this.userRepository=userRepository;
-		this.passwordEncoder=passwordEncoder;
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
-	
-	public boolean check(String name, String password) {
-		Optional<User> optionalUser = userRepository.findByName(name);
-		if(optionalUser.isEmpty()) {
-			return false;
+
+//	public void signup(String name, String password) {
+//		User user = new User();
+//		user.setName(name);
+//		user.setPassword(passwordEncoder.encode(password));
+//		userRepository.save(user);
+//	}
+//
+//	public User login(String name, String password) {
+//		User user = userRepository.findByName(name).orElseThrow(() -> new RuntimeException("ユーザーが見つかりません"));
+//		if (!passwordEncoder.matches(password, user.getPassword())) {
+//			throw new RuntimeException("Invalid password");
+//
+//		}
+//		return user;
+//	}
+	public User login(String name, String password) {
+
+		User user = userRepository.findByName(name).orElseThrow(() -> new RuntimeException("failed"));
+
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new RuntimeException("failed");
 		}
-		User user = optionalUser.get();
-		return passwordEncoder.matches(password, user.getPassword());
+
+		return user;
 	}
-	
+
 	public void signup(String name, String password) {
+		if (userRepository.existsByName(name)) {
+			throw new IllegalArgumentException("この名前は登録済みです");
+		}
+
 		User user = new User();
 		user.setName(name);
 		user.setPassword(passwordEncoder.encode(password));
-		userRepository.save(user);
-	}
 
+		userRepository.save(user);
+
+	}
 }

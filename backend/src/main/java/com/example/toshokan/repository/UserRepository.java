@@ -10,5 +10,6 @@ import com.example.toshokan.entity.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>{	
 	public Optional<User> findByName(String name);
+	public boolean existsByName(String name);
 
 }

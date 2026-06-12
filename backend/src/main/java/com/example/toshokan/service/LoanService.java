@@ -53,10 +53,14 @@ public class LoanService {
 	@Transactional
 	public boolean borrowBook(Integer bookId) {
 		User user = getLoginUser();
+		
+		if(user==null) {
+			throw new RuntimeException("NOT LOGIN");
+		}
 		Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
 		// すでに貸し出し中なら貸せない
 		if (book.getStatus() == 1) {
-			return false;
+			throw new RuntimeException("Already borrowed");
 		}
 		// loan作成
 		Loan loan = new Loan();

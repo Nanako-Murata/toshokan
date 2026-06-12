@@ -1,12 +1,10 @@
 package com.example.toshokan.security;
 
-import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,31 +15,29 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
 	@Bean
-	public SecurityFilterChain chain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(
-						auth -> auth.requestMatchers("/api/login", "/signup").permitAll().anyRequest().authenticated())
-				.formLogin(Customizer.withDefaults());
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/login", "/api/signup").permitAll()
+						.requestMatchers("/books/**").authenticated().anyRequest().authenticated())
+				.formLogin(form -> form.disable())
+				// ⭐これ追加（重要）
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+				.logout(logout -> logout.logoutUrl("/logout")
+						.logoutSuccessHandler((request, response, authentication) -> {
+							response.setStatus(200);
+						}).invalidateHttpSession(true).deleteCookies("JSESSIONID"));
 
 		return http.build();
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 
 		CorsConfiguration config = new CorsConfiguration();
-
 		config.setAllowCredentials(true);
-
 		config.addAllowedOrigin("http://localhost:5173");
-
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("*");
 
@@ -49,5 +45,10 @@ public class SecurityConfig {
 		source.registerCorsConfiguration("/**", config);
 
 		return source;
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
