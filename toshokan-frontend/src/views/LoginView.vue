@@ -7,7 +7,7 @@
       <form @submit.prevent="login">
 
         <input
-          v-model="username"
+          v-model="name"
           type="text"
           placeholder="name"
           autocomplete="name"
@@ -48,9 +48,8 @@ import { api } from "@/api"
 const router = useRouter()
 const errorMessage = ref("")
 
-const username = ref("")
+const name = ref("")
 const password = ref("")
-
 const login = async () => {
   try {
     errorMessage.value = ""

@@ -81,6 +81,10 @@ const goDetail = (id) => {
 const goMyPage = () => {
   router.push("/mypage")
 }
+
+const goRegister = () => {
+  router.push("/books/register")
+}
 </script>
 
 <template>
@@ -94,6 +98,7 @@ const goMyPage = () => {
     <!-- 操作ボタン -->
     <button @click="logout">ログアウト</button>
     <button @click="goMyPage">マイページ</button>
+    <button @click="goRegister">本を追加</button>
 
     <table border="1">
       <tr>

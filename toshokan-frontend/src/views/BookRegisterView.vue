@@ -1,19 +1,21 @@
 <template>
   <div>
-    <h1>Register Book</h1>
+    <h1>本の追加</h1>
 
-    <input v-model="title" />
-    <input v-model="author" />
-    <textarea v-model="detail"></textarea>
+    <input v-model="title" placeholder="タイトル" />
+    <input v-model="author" placeholder="著者" />
+    <textarea v-model="detail" placeholder="詳細"></textarea>
 
     <button @click="register">登録</button>
+
+    <button @click="goList">一覧へ戻る</button>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue"
-import axios from "axios"
 import { useRouter } from "vue-router"
+import { api } from "@/api"
 
 const router = useRouter()
 
@@ -21,14 +23,25 @@ const title = ref("")
 const author = ref("")
 const detail = ref("")
 
+// 登録
 const register = async () => {
-  await axios.post("http://localhost:8080/books", {
-    title: title.value,
-    author: author.value,
-    detail: detail.value,
-    status: 0
-  })
+  try {
+    await api.post("/books", {
+      title: title.value,
+      author: author.value,
+      detail: detail.value
+    })
 
+    alert("登録しました")
+    router.push("/books")
+
+  } catch (e) {
+    console.error("登録失敗:", e)
+  }
+}
+
+// 一覧へ戻る
+const goList = () => {
   router.push("/books")
 }
 </script>
