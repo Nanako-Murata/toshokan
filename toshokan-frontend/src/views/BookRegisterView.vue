@@ -3,10 +3,13 @@
     <h1>本の追加</h1>
 
     <input v-model="title" placeholder="タイトル" />
+    <br/>
     <input v-model="author" placeholder="著者" />
+    <br/>
     <textarea v-model="detail" placeholder="詳細"></textarea>
-
+<br/>
     <button @click="register">登録</button>
+    <br/>
 
     <button @click="goList">一覧へ戻る</button>
   </div>

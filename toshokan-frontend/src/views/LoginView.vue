@@ -12,6 +12,8 @@
           placeholder="name"
           autocomplete="name"
         />
+        &ensp;
+
 
         <input
           v-model="password"
@@ -19,6 +21,7 @@
           placeholder="password"
           autocomplete="current-password"
         />
+         &ensp;
 
         
 

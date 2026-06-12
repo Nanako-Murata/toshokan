@@ -93,11 +93,14 @@ const goRegister = () => {
 
     <!-- 検索 -->
     <input v-model="keyword" placeholder="検索キーワード" />
+    &ensp;
     <button @click="search">検索</button>
-
+&ensp;
     <!-- 操作ボタン -->
     <button @click="logout">ログアウト</button>
+    &ensp;
     <button @click="goMyPage">マイページ</button>
+    &ensp;
     <button @click="goRegister">本を追加</button>
 
     <table border="1">

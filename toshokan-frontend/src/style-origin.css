@@ -1,0 +1,129 @@
+/* :root {
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #f6f7fb;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170, 59, 255, 0.1);
+  --accent-border: rgba(170, 59, 255, 0.5);
+
+  --shadow:
+    rgba(0, 0, 0, 0.12) 0 10px 25px -5px,
+    rgba(0, 0, 0, 0.06) 0 4px 10px -2px;
+
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 16px/145% var(--sans);
+  letter-spacing: 0.2px;
+  color: var(--text);
+  background: var(--bg);
+  color-scheme: light dark;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ダークモード */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #a1a1aa;
+    --text-h: #f3f4f6;
+    --bg: #0f1117;
+    --border: #2a2d36;
+    --accent: #c084fc;
+    --accent-bg: rgba(192, 132, 252, 0.15);
+  }
+}
+
+body {
+  margin: 0;
+}
+
+/* ===== アプリ全体 ===== */
+#app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg);
+}
+
+/* ===== ログインカード ===== */
+#center {
+  width: 360px;
+  padding: 32px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+/* ダーク対応カード */
+@media (prefers-color-scheme: dark) {
+  #center {
+    background: #161922;
+  }
+}
+
+/* タイトル */
+h1, h2 {
+  color: var(--text-h);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+/* ===== input ===== */
+input {
+  width: 100%;
+  padding: 11px 12px;
+  margin: 6px 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+  background: transparent;
+  color: var(--text-h);
+}
+
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+/* ===== button ===== */
+button {
+  width: 100%;
+  padding: 11px 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Signupリンクボタン */
+.link {
+  background: transparent;
+  color: var(--accent);
+  margin-top: 8px;
+  font-weight: 500;
+}
