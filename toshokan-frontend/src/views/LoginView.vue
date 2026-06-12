@@ -9,8 +9,8 @@
         <input
           v-model="username"
           type="text"
-          placeholder="username"
-          autocomplete="username"
+          placeholder="name"
+          autocomplete="name"
         />
 
         <input
@@ -20,15 +20,17 @@
           autocomplete="current-password"
         />
 
+        
+
         <button type="submit">
           Login
         </button>
 
       </form>
 
-      <p v-if="error" class="error">
-        {{ error }}
-      </p>
+     <p v-if="errorMessage" style="color:red;">
+  {{ errorMessage }}
+</p>
 
       <button class="link" type="button" @click="goSignup">
         Create account
@@ -37,33 +39,34 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref } from "vue"
-import axios from "axios"
 import { useRouter } from "vue-router"
+import { api } from "@/api"
 
 const router = useRouter()
+const errorMessage = ref("")
 
 const username = ref("")
 const password = ref("")
 
 const login = async () => {
   try {
-    const res = await axios.post(
-      "http://localhost:8080/login",
-      {
-        username: username.value,
-        password: password.value
-      },
-      { withCredentials: true }
-    )
+    errorMessage.value = ""
 
-    console.log("ログイン成功:", res.data)
+    const res = await api.post("/api/login", {
+      name: name.value,
+      password: password.value
+    })
 
     router.push("/books")
 
   } catch (e) {
-    console.error("ログイン失敗:", e)
+    console.error("login失敗:", e)
+
+    errorMessage.value =
+      e.response?.data || "name, passwordが違います"
   }
 }
 

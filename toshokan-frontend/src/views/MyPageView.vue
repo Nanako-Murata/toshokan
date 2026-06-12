@@ -1,44 +1,84 @@
+<script setup>
+import { ref, onMounted } from "vue"
+import { useRouter } from "vue-router"
+import axios from "axios"
+import { api } from "@/api"
+
+const router = useRouter()
+const loans = ref([])
+
+/* 現在貸出中 */
+const fetchLoans = async () => {
+  try {
+    const res = await api.get("/loans/current", {
+      withCredentials: true
+    })
+
+    loans.value = res.data.content ?? res.data
+  } catch (e) {
+    console.error("取得失敗:", e)
+  }
+}
+
+/* 返却 */
+const returnBook = async (loanId) => {
+  try {
+    await api.post(`/loan/${loanId}/return`, {}, {
+      withCredentials: true
+    })
+
+    await fetchLoans() // 画面更新
+  } catch (e) {
+    console.error("返却失敗:", e)
+  }
+}
+
+/* ナビ */
+const goList = () => router.push("/books")
+const goHistory = () => router.push("/loans/history")
+
+const logout = async () => {
+  try {
+    await api.post("/logout", {})
+
+    // ログイン画面へ戻す
+    router.push("/")
+
+  } catch (e) {
+    console.error("logout失敗:", e)
+  }
+}
+onMounted(fetchLoans)
+</script>
+
 <template>
   <div>
-    <h1>MyPage</h1>
+    <h1>マイページ</h1>
 
+    <button @click="goList">本一覧</button>
     <button @click="goHistory">履歴</button>
+    <button @click="logout">ログアウト</button>
+
+    <hr />
 
     <table border="1">
       <tr>
         <th>タイトル</th>
         <th>著者</th>
-        <th>返却</th>
+        <th>借りた日</th>
+        <th>操作</th>
       </tr>
 
       <tr v-for="l in loans" :key="l.id">
         <td>{{ l.book.title }}</td>
         <td>{{ l.book.author }}</td>
-        <td><button @click="returnBook(l.id)">返却</button></td>
+        <td>{{ l.loanDate }}</td>
+        <td>
+          <button @click="returnBook(l.id)">
+            返却
+          </button>
+        </td>
       </tr>
     </table>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from "vue"
-import axios from "axios"
-import { useRouter } from "vue-router"
-
-const router = useRouter()
-const loans = ref([])
-
-const fetchLoans = async () => {
-  const res = await axios.get("http://localhost:8080/loans/current")
-  loans.value = res.data.content
-}
-
-onMounted(fetchLoans)
-
-const returnBook = async (id) => {
-  await axios.post(`http://localhost:8080/loans/${id}/return`)
-  fetchLoans()
-}
-
-const goHistory = () => router.push("/loans/history")
-</script>

@@ -1,38 +1,7 @@
-<template>
-  <div>
-    <h1>Book List</h1>
-
-    <input v-model="keyword" placeholder="検索" />
-    <button @click="search">検索</button>
-
-    <button @click="goMyPage">MyPage</button>
-    <button @click="goRegister">登録</button>
-
-    <table border="1">
-      <tr>
-        <th>タイトル</th>
-        <th>著者</th>
-        <th>状態</th>
-      </tr>
-
-      <tr v-for="b in books" :key="b.id">
-        <td @click="goDetail(b.id)" style="cursor:pointer;color:blue;">
-          {{ b.title }}
-        </td>
-        <td>{{ b.author }}</td>
-        <td>{{ b.status === 0 ? "貸出可" : "貸出中" }}</td>
-      </tr>
-    </table>
-
-    <button @click="prev" :disabled="page===0">前へ</button>
-    <button @click="next">次へ</button>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from "vue"
-import axios from "axios"
 import { useRouter } from "vue-router"
+import { api } from "@/api"
 
 const router = useRouter()
 
@@ -40,26 +9,121 @@ const books = ref([])
 const keyword = ref("")
 const page = ref(0)
 
+/* ======================
+   本一覧（初期表示）
+====================== */
 const fetchBooks = async () => {
-  const res = await axios.get("http://localhost:8080/books", {
-    params: { page: page.value, size: 20 }
-  })
-  books.value = res.data.content
+  try {
+    const res = await api.get("/books", {
+      params: { page: page.value, size: 20 }
+    })
+
+    books.value = res.data.content ?? res.data
+
+  } catch (e) {
+    console.error("一覧取得失敗:", e)
+  }
 }
 
-onMounted(fetchBooks)
+/* 初期表示 */
+onMounted(() => {
+  fetchBooks()
+})
 
+/* ======================
+   検索
+====================== */
 const search = async () => {
-  const res = await axios.get("http://localhost:8080/books/search", {
-    params: { keyword: keyword.value }
-  })
-  books.value = res.data
+  try {
+    const res = await api.get("/books/search", {
+      params: { keyword: keyword.value }
+    })
+
+    books.value = res.data.content ?? res.data
+
+  } catch (e) {
+    console.error("検索失敗:", e)
+  }
 }
 
-const next = () => { page.value++; fetchBooks() }
-const prev = () => { page.value--; fetchBooks() }
+/* ======================
+   貸出
+====================== */
+const borrowBook = async (bookId) => {
+  try {
+    await api.post(`/book/${bookId}/borrow`)
 
-const goDetail = (id) => router.push(`/books/${id}`)
-const goMyPage = () => router.push("/mypage")
-const goRegister = () => router.push("/books/register")
+    await fetchBooks()
+
+  } catch (e) {
+    console.error("貸出失敗:", e)
+  }
+}
+
+/* ======================
+   ログアウト
+====================== */
+const logout = async () => {
+  try {
+    await api.post("/logout") // ★ Spring Security標準
+    router.push("/") // ★ ログイン画面へ戻す
+  } catch (e) {
+    console.error("logout失敗:", e)
+  }
+}
+/* ======================
+   画面遷移
+====================== */
+const goDetail = (id) => {
+  router.push(`/books/${id}`)
+}
+
+const goMyPage = () => {
+  router.push("/mypage")
+}
 </script>
+
+<template>
+  <div>
+    <h1>Book List</h1>
+
+    <!-- 検索 -->
+    <input v-model="keyword" placeholder="検索キーワード" />
+    <button @click="search">検索</button>
+
+    <!-- 操作ボタン -->
+    <button @click="logout">ログアウト</button>
+    <button @click="goMyPage">マイページ</button>
+
+    <table border="1">
+      <tr>
+        <th>タイトル</th>
+        <th>著者</th>
+        <th>状態</th>
+        <th>操作</th>
+      </tr>
+
+      <tr v-for="b in books" :key="b.id">
+        <!-- 詳細画面へ -->
+        <td @click="goDetail(b.id)" style="cursor:pointer;color:blue;">
+          {{ b.title }}
+        </td>
+
+        <td>{{ b.author }}</td>
+
+        <td>
+          {{ b.status === 0 ? "貸出可" : "貸出中" }}
+        </td>
+
+        <td>
+          <button
+            v-if="b.status === 0"
+            @click="borrowBook(b.id)"
+          >
+            かりる
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</template>

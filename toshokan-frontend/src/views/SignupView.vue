@@ -2,16 +2,28 @@
   <div>
     <h1>Signup</h1>
 
-<input v-model="username" placeholder="username" />
-<input v-model="password" type="password" placeholder="password" />
+    <div>
+      <input v-model="name" placeholder="名前" />
+    </div>
 
-<button @click="signup">登録</button>
+    <div>
+      <input v-model="password" type="password" placeholder="パスワード" />
+    </div>
 
-<br><br>
+    <button @click="signup">登録</button>
 
-<button @click="goLogin">
-  ログイン画面へ戻る
-</button>
+    <br /><br />
+
+    <!-- ⭐エラー表示（これ重要） -->
+    <p v-if="errorMessage" style="color: red;">
+      {{ errorMessage }}
+    </p>
+
+    <br />
+
+    <button @click="goLogin">
+      ログイン画面へ戻る
+    </button>
   </div>
 </template>
 
@@ -22,17 +34,27 @@ import { useRouter } from "vue-router"
 
 const router = useRouter()
 
-const username = ref("")
+const name = ref("")
 const password = ref("")
+const errorMessage = ref("")
 
 const signup = async () => {
-  await axios.post("http://localhost:8080/signup", {
-    username: username.value,
-    password: password.value
-  })
+  try {
+    errorMessage.value = ""
 
-  alert("登録完了")
-  router.push("/")
+    await axios.post("http://localhost:8080/api/signup", {
+      name: name.value,
+      password: password.value
+    })
+
+    alert("登録完了")
+    router.push("/")
+  } catch (e) {
+    console.error("signup失敗:", e)
+
+    errorMessage.value =
+      e.response?.data || "この名前はすでに使われています"
+  }
 }
 
 const goLogin = () => {
