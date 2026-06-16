@@ -1,14 +1,9 @@
 package com.example.toshokan.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,38 +11,39 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.toshokan.dto.LoginRequest;
 import com.example.toshokan.entity.User;
+import com.example.toshokan.repository.UserRepository;
+import com.example.toshokan.security.JwtUtil;
 import com.example.toshokan.service.UserService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api")
 public class AuthController {
 
 	private final UserService userService;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
-	public AuthController(UserService userService) {
+	public AuthController(UserService userService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
 		this.userService = userService;
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+	public Map<String, String> login(@RequestBody LoginRequest req) {
 
-		User user = userService.login(request.getName(), request.getPassword());
+		User user = userRepository.findByName(req.getName())
+		        .orElseThrow(() -> new RuntimeException("user not found"));
 
-		if (user == null) {
-			return ResponseEntity.status(401).body("名前、パスワードが違います");
-		}
+	    if (user == null || !passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+	        throw new RuntimeException("login failed");
+	    }
 
-		Authentication auth = new UsernamePasswordAuthenticationToken(user.getName(), null,
-				List.of(new SimpleGrantedAuthority("ROLE_USER")));
+	    String token = JwtUtil.generateToken(user.getName());
 
-		SecurityContextHolder.getContext().setAuthentication(auth);
-		httpRequest.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-				SecurityContextHolder.getContext());
+	    return Map.of("token", token);
+	}
 
-		return ResponseEntity.ok(user);
 		
 //		SecurityContext context = SecurityContextHolder.createEmptyContext();
 //		context.setAuthentication(auth);
@@ -61,7 +57,6 @@ public class AuthController {
 //		session.setAttribute("LOGIN_USER", user);
 //
 //		return user;
-	}
 
 //spring security の標準ログアウトに切り替え
 //	@PostMapping("/logout")
