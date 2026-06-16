@@ -17,17 +17,13 @@ const fetchBooks = async () => {
       params: { page: page.value, size: 20 }
     })
 
-    console.log("BOOK RESPONSE:", res.data)
+    console.log("FULL RES:", res)
+    console.log("DATA:", res.data)
 
-    books.value = res.data.content ?? res.data
+    books.value = res.data?.content ?? res.data
 
   } catch (e) {
-    console.error("一覧取得失敗:", e.response?.status)
-
-    if (e.response?.status === 401) {
-      alert("ログイン切れです")
-      router.push("/")
-    }
+    console.error("ERROR:", e)
   }
 }
 
