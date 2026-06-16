@@ -29,8 +29,10 @@ public class BookController {
 	//本一覧を表示
 	@GetMapping("/books")
 	public Page<Book> getBooks(Pageable pageable) {
+		System.out.println("get all books");
 		return bookRepository.findAll(pageable);
 	}
+	
 	//本の詳細を表示
 	@GetMapping("/books/{id}")
 	public Book getBook(@PathVariable Integer id) {
