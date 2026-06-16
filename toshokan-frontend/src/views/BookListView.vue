@@ -26,7 +26,6 @@ const fetchBooks = async () => {
     console.error("一覧取得失敗:", e)
   }
 }
-
 /* 初期表示 */
 onMounted(() => {
   fetchBooks()
