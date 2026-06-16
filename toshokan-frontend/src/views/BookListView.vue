@@ -7,32 +7,32 @@ const router = useRouter()
 
 const books = ref([])
 const keyword = ref("")
-const page = ref(0)
 
 /* ======================
-   本一覧（初期表示）
+　本一覧（初期表示）
 ====================== */
 const fetchBooks = async () => {
   try {
-    const res = await api.get("/books", {
-      params: { page: page.value, size: 20 }
-    })
+    const res = await api.get("/books")
 
     console.log("BOOK RESPONSE:", res.data)
 
-    books.value = res.data.content ?? res.data
+    // Page対応やめて完全フラット化
+    books.value = res.data
 
   } catch (e) {
     console.error("一覧取得失敗:", e)
   }
 }
+
 /* 初期表示 */
 onMounted(() => {
   fetchBooks()
 })
 
+
 /* ======================
-   検索
+　検索
 ====================== */
 const search = async () => {
   try {
@@ -47,8 +47,9 @@ const search = async () => {
   }
 }
 
+
 /* ======================
-   貸出
+　貸出
 ====================== */
 const borrowBook = async (bookId) => {
   try {
@@ -61,16 +62,29 @@ const borrowBook = async (bookId) => {
   }
 }
 
+
 /* ======================
-   ログアウト
+　画面遷移
 ====================== */
-const logout = async () => {
-  try {
+const goDetail = (id) => {
+  router.push(`/books/${id}`)
+}
+
+const goMyPage = () => {
+  router.push("/mypage")
+}
+
+const goRegister = () => {
+  router.push("/books/register")
+}
+
+
+/* ======================
+　ログアウト
+====================== */
+const logout = () => {
   localStorage.removeItem("token")
-  router.push("/") // ★ ログイン画面へ戻す
-  } catch (e) {
-    console.error("logout失敗:", e)
-  }
+  router.push("/")
 }
 /* ======================
    画面遷移
