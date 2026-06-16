@@ -13,15 +13,21 @@ const keyword = ref("")
 ====================== */
 const fetchBooks = async () => {
   try {
-    const res = await api.get("/books")
+    const res = await api.get("/books", {
+      params: { page: page.value, size: 20 }
+    })
 
     console.log("BOOK RESPONSE:", res.data)
 
-    // Page対応やめて完全フラット化
-    books.value = res.data
+    books.value = res.data.content ?? res.data
 
   } catch (e) {
-    console.error("一覧取得失敗:", e)
+    console.error("一覧取得失敗:", e.response?.status)
+
+    if (e.response?.status === 401) {
+      alert("ログイン切れです")
+      router.push("/")
+    }
   }
 }
 
