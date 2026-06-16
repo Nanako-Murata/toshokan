@@ -65,8 +65,8 @@ const borrowBook = async (bookId) => {
 ====================== */
 const logout = async () => {
   try {
-    await api.post("/logout") // ★ Spring Security標準
-    router.push("/") // ★ ログイン画面へ戻す
+  localStorage.removeItem("token")
+  router.push("/") // ★ ログイン画面へ戻す
   } catch (e) {
     console.error("logout失敗:", e)
   }
@@ -113,15 +113,17 @@ const goRegister = () => {
 
       <tr v-for="b in books" :key="b.id">
         <!-- 詳細画面へ -->
-        <td @click="goDetail(b.id)" style="cursor:pointer;color:blue;">
-          {{ b.title }}
-        </td>
+<td @click="goDetail(b.id)" style="cursor:pointer;color:blue;">
+  {{ b.title }}
+</td>
 
-        <td>{{ b.author }}</td>
+<td>
+  {{ b.author }}
+</td>
 
-        <td>
-          {{ b.status === 0 ? "貸出可" : "貸出中" }}
-        </td>
+<td>
+  {{ b.status === 0 ? "貸出可" : "貸出中" }}
+</td>
 
         <td>
           <button

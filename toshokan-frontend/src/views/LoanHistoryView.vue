@@ -69,13 +69,11 @@ onMounted(fetchHistory)
       </tr>
 
       <tr v-for="l in loans" :key="l.id">
-        <td>{{ l.book?.title }}</td>
-        <td>{{ l.book?.author }}</td>
-        <td>{{ l.loanDate }}</td>
-        <td>
-          {{ l.returnDate ? l.returnDate : "未返却" }}
-        </td>
-      </tr>
+  <td>{{ l.title }}</td>
+  <td>{{ l.author }}</td>
+  <td>{{ l.loanDate }}</td>
+  <td>未返却</td>
+</tr>
     </table>
   </div>
 </template>
