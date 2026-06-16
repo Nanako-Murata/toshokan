@@ -31,6 +31,8 @@
 import { ref } from "vue"
 import axios from "axios"
 import { useRouter } from "vue-router"
+import { api } from "@/api"
+
 
 const router = useRouter()
 
@@ -42,11 +44,11 @@ const signup = async () => {
   try {
     errorMessage.value = ""
 
-    await axios.post("http://localhost:8080/api/signup", {
-      name: name.value,
-      password: password.value
-    })
 
+await api.post("/api/signup", {
+  name: name.value,
+  password: password.value
+})
     alert("登録完了")
     router.push("/")
   } catch (e) {
