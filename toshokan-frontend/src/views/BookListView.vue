@@ -13,11 +13,12 @@ const page = ref(0)
    本一覧（初期表示）
 ====================== */
 const fetchBooks = async () => {
-  console.log("BOOK RESPONSE:", res.data)
   try {
     const res = await api.get("/books", {
       params: { page: page.value, size: 20 }
     })
+
+    console.log("BOOK RESPONSE:", res.data)
 
     books.value = res.data.content ?? res.data
 
