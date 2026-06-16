@@ -17,13 +17,12 @@ const fetchBooks = async () => {
       params: { page: page.value, size: 20 }
     })
 
-    console.log("FULL RES:", res)
-    console.log("DATA:", res.data)
+    console.log("BOOK RESPONSE:", res.data)
 
-    books.value = res.data?.content ?? res.data
+    books.value = res.data.content ?? res.data
 
   } catch (e) {
-    console.error("ERROR:", e)
+    console.error("一覧取得失敗:", e)
   }
 }
 
