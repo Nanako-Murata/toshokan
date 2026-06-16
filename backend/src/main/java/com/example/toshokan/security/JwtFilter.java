@@ -14,9 +14,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtFilter extends OncePerRequestFilter {
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+
+		// 🔥 デバッグログ（ここが超重要）
+		System.out.println("==== JWT FILTER HIT ====");
+		System.out.println("REQUEST URI: " + request.getRequestURI());
+		System.out.println("AUTH HEADER: " + request.getHeader("Authorization"));
 
 		String header = request.getHeader("Authorization");
 
@@ -26,17 +32,23 @@ public class JwtFilter extends OncePerRequestFilter {
 			try {
 				String username = JwtUtil.extractUsername(token);
 
+				System.out.println("JWT USERNAME: " + username);
+
 				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null,
 						List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
 				SecurityContextHolder.getContext().setAuthentication(auth);
 
+				System.out.println("AUTH SUCCESS SET");
+
 			} catch (Exception e) {
+				System.out.println("JWT ERROR OCCURRED");
 				e.printStackTrace();
 			}
+		} else {
+			System.out.println("NO BEARER TOKEN FOUND");
 		}
 
 		filterChain.doFilter(request, response);
 	}
-
 }
