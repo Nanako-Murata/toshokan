@@ -27,6 +27,7 @@ public class BookController {
 	
 	@GetMapping("/books")
 	public List<Book> getBooks() {
+		 System.out.println("🔥 BOOK CONTROLLER HIT");
 	    return bookRepository.findAll();
 	}
 
