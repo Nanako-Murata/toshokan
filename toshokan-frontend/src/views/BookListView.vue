@@ -13,19 +13,15 @@ const keyword = ref("")
 ====================== */
 const fetchBooks = async () => {
   try {
-    const res = await api.get("/books", {
-      params: { page: page.value, size: 20 }
-    })
+    const res = await api.get("/books")
 
     console.log("BOOK RESPONSE:", res.data)
 
-    books.value = res.data.content ?? res.data
-
+    books.value = res.data
   } catch (e) {
     console.error("一覧取得失敗:", e)
   }
 }
-
 /* 初期表示 */
 onMounted(() => {
   fetchBooks()
