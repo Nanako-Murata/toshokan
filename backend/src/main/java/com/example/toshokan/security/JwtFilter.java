@@ -14,13 +14,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtFilter extends OncePerRequestFilter {
-	
+
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-	    String path = request.getServletPath();
-	    return path.startsWith("/api/login")
-	        || path.startsWith("/api/signup")
-	        || path.startsWith("/login"); // ←これ追加
+		String path = request.getServletPath();
+		return path.startsWith("/api/login") || path.startsWith("/api/signup") || path.equals("/login")
+				|| path.equals("/error");
 	}
 
 	@Override
@@ -35,12 +34,9 @@ public class JwtFilter extends OncePerRequestFilter {
 		String header = request.getHeader("Authorization");
 
 		if (header != null && header.startsWith("Bearer ")) {
-			String token = header.substring(7);
-
 			try {
+				String token = header.substring(7);
 				String username = JwtUtil.extractUsername(token);
-
-				System.out.println("JWT USERNAME: " + username);
 
 				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null,
 						List.of(new SimpleGrantedAuthority("ROLE_USER")));
@@ -48,15 +44,17 @@ public class JwtFilter extends OncePerRequestFilter {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 
 				System.out.println("AUTH SUCCESS SET");
+				System.out.println("AUTH AFTER SET = " + SecurityContextHolder.getContext().getAuthentication());
 
 			} catch (Exception e) {
-				System.out.println("JWT ERROR OCCURRED");
+				System.out.println("JWT INVALID → BLOCK OR SKIP AUTH");
 				e.printStackTrace();
+
+				SecurityContextHolder.clearContext();
 			}
 		} else {
 			System.out.println("NO BEARER TOKEN FOUND");
+			SecurityContextHolder.clearContext();
 		}
-
-		filterChain.doFilter(request, response);
 	}
 }
