@@ -89,17 +89,7 @@ const logout = () => {
 /* ======================
    画面遷移
 ====================== */
-const goDetail = (id) => {
-  router.push(`/books/${id}`)
-}
 
-const goMyPage = () => {
-  router.push("/mypage")
-}
-
-const goRegister = () => {
-  router.push("/books/register")
-}
 </script>
 
 <template>
