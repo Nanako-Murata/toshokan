@@ -24,7 +24,6 @@ public class Book {
 
 	private String author;
 	
-	@Lob
 	@Column(name="detail")
 	private String detail;
 	
