@@ -62,6 +62,16 @@ const login = async () => {
       password: password.value
     })
 
+    console.log("LOGIN RESPONSE:", res.data)
+
+    const token = res.data.token
+
+    if (!token) {
+      throw new Error("tokenがレスポンスにありません")
+    }
+
+    localStorage.setItem("token", token)
+
     router.push("/books")
 
   } catch (e) {
