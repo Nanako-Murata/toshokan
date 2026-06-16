@@ -64,10 +64,14 @@ const login = async () => {
 
     console.log("LOGIN RESPONSE:", res.data)
 
-    const token = res.data.token
+    // ⭐ここに入れる
+    const token =
+      res.data.token ||
+      res.data.jwt ||
+      res.data
 
     if (!token) {
-      throw new Error("tokenがレスポンスにありません")
+      throw new Error("tokenが取れてない")
     }
 
     localStorage.setItem("token", token)
