@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.toshokan.entity.Loan;
+import com.example.toshokan.dto.LoanResponse;
 import com.example.toshokan.service.LoanService;
 @RestController
 public class LoanController {
@@ -18,17 +18,15 @@ public class LoanController {
 	public LoanController(LoanService loanService) {
 		this.loanService=loanService;
 	}
-	//今借りてる本一覧
+	
 	@GetMapping("/loans/current")
-	public Page<Loan> currentLoans(Pageable pageable){
-		return loanService.getCurrentLoans(pageable);
-	
+	public Page<LoanResponse> currentLoans(Pageable pageable){
+	    return loanService.getCurrentLoans(pageable);
 	}
-	
-	//過去に借りた本一覧
+
 	@GetMapping("/loans/history")
-	public Page<Loan> history(Pageable pageable){
-		return loanService.getHistory(pageable);
+	public Page<LoanResponse> history(Pageable pageable){
+	    return loanService.getHistory(pageable);
 	}
 	
 	//貸し出し処理

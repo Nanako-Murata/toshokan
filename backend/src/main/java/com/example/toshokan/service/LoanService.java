@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.example.toshokan.dto.LoanResponse;
 import com.example.toshokan.entity.Book;
 import com.example.toshokan.entity.Loan;
 import com.example.toshokan.entity.User;
