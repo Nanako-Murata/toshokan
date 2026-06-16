@@ -29,74 +29,160 @@ public class LoanService {
 		this.bookRepository = bookRepository;
 		this.userRepository = userRepository;
 	}
+	
 
-	// ログイン中のユーザーを取得する
-	private User getLoginUser() {
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		return userRepository.findByName(username).orElseThrow();
-	}
+    // ログイン中ユーザー取得
+    private User getLoginUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByName(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
-	// 現在貸し出し中
-	public Page<Loan> getCurrentLoans(Pageable pageable) {
-		User user = getLoginUser();
-		return loanRepository.findByUserAndReturnDateIsNull(user, pageable);
-	}
+    // 現在貸し出し中（DTO返す）
+    public Page<LoanResponse> getCurrentLoans(Pageable pageable) {
 
-	// 貸し出し履歴
-	public Page<Loan> getHistory(Pageable pageable) {
-		User user = getLoginUser();
-		return loanRepository.findByUserAndReturnDateIsNotNull(user, pageable);
+        User user = getLoginUser();
 
-	}
+        return loanRepository
+                .findByUserAndReturnDateIsNull(user, pageable)
+                .map(l -> new LoanResponse(
+                        l.getId(),
+                        l.getBook().getTitle(),
+                        l.getBook().getAuthor(),
+                        l.getLoanDate()
+                ));
+    }
 
-	// 貸し出し処理
-	@Transactional
-	public boolean borrowBook(Integer bookId) {
-		User user = getLoginUser();
-		
-		if(user==null) {
-			throw new RuntimeException("NOT LOGIN");
-		}
-		Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
-		// すでに貸し出し中なら貸せない
-		if (book.getStatus() == 1) {
-			throw new RuntimeException("Already borrowed");
-		}
-		// loan作成
-		Loan loan = new Loan();
-		loan.setUser(user);
-		loan.setBook(book);
-		loan.setLoanDate(LocalDate.now());
-		loan.setReturnDate(null);
-		loanRepository.save(loan);
+    // 貸し出し履歴（DTO返す）
+    public Page<LoanResponse> getHistory(Pageable pageable) {
 
-		// 本のステータス更新
-		book.setStatus(1);
-		bookRepository.save(book);
+        User user = getLoginUser();
 
-		return true;
-	}
+        return loanRepository
+                .findByUserAndReturnDateIsNotNull(user, pageable)
+                .map(l -> new LoanResponse(
+                        l.getId(),
+                        l.getBook().getTitle(),
+                        l.getBook().getAuthor(),
+                        l.getLoanDate()
+                ));
+    }
 
-	// 返却処理
-	@Transactional
-	public void returnBook(Integer loanId) {
-		User user = getLoginUser();
-		Loan loan = loanRepository.findById(loanId).orElseThrow(() -> new RuntimeException("Loan not found"));
-		//他人の返却防止
-		if((!loan.getUser().getId().equals(user.getId()))) {
-			throw new RuntimeException("Unauthorized");
-		}
-		
-		//返却処理本体
-		loan.setReturnDate(LocalDate.now());
-		loanRepository.save(loan);
-		
-		//本のステータスを貸し出し中から貸し出し可能にする
-		Book book = loan.getBook();
-		book.setStatus(0);
-		bookRepository.save(book);
+    // 貸し出し処理
+    @Transactional
+    public boolean borrowBook(Integer bookId) {
 
-	}
+        User user = getLoginUser();
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+
+        if (book.getStatus() == 1) {
+            throw new RuntimeException("Already borrowed");
+        }
+
+        Loan loan = new Loan();
+        loan.setUser(user);
+        loan.setBook(book);
+        loan.setLoanDate(LocalDate.now());
+        loan.setReturnDate(null);
+
+        loanRepository.save(loan);
+
+        book.setStatus(1);
+        bookRepository.save(book);
+
+        return true;
+    }
+
+    // 返却処理
+    @Transactional
+    public void returnBook(Integer loanId) {
+
+        User user = getLoginUser();
+
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+        if (!loan.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        loan.setReturnDate(LocalDate.now());
+        loanRepository.save(loan);
+
+        Book book = loan.getBook();
+        book.setStatus(0);
+        bookRepository.save(book);
+    }
+
+//	// ログイン中のユーザーを取得する
+//	private User getLoginUser() {
+//		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//		return userRepository.findByName(username).orElseThrow();
+//	}
+//
+//	// 現在貸し出し中
+//	public Page<Loan> getCurrentLoans(Pageable pageable) {
+//		User user = getLoginUser();
+//		return loanRepository.findByUserAndReturnDateIsNull(user, pageable);
+//	}
+//
+//	// 貸し出し履歴
+//	public Page<Loan> getHistory(Pageable pageable) {
+//		User user = getLoginUser();
+//		return loanRepository.findByUserAndReturnDateIsNotNull(user, pageable);
+//
+//	}
+//
+//	// 貸し出し処理
+//	@Transactional
+//	public boolean borrowBook(Integer bookId) {
+//		User user = getLoginUser();
+//		
+//		if(user==null) {
+//			throw new RuntimeException("NOT LOGIN");
+//		}
+//		Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+//		// すでに貸し出し中なら貸せない
+//		if (book.getStatus() == 1) {
+//			throw new RuntimeException("Already borrowed");
+//		}
+//		// loan作成
+//		Loan loan = new Loan();
+//		loan.setUser(user);
+//		loan.setBook(book);
+//		loan.setLoanDate(LocalDate.now());
+//		loan.setReturnDate(null);
+//		loanRepository.save(loan);
+//
+//		// 本のステータス更新
+//		book.setStatus(1);
+//		bookRepository.save(book);
+//
+//		return true;
+//	}
+//
+//	// 返却処理
+//	@Transactional
+//	public void returnBook(Integer loanId) {
+//		User user = getLoginUser();
+//		Loan loan = loanRepository.findById(loanId).orElseThrow(() -> new RuntimeException("Loan not found"));
+//		//他人の返却防止
+//		if((!loan.getUser().getId().equals(user.getId()))) {
+//			throw new RuntimeException("Unauthorized");
+//		}
+//		
+//		//返却処理本体
+//		loan.setReturnDate(LocalDate.now());
+//		loanRepository.save(loan);
+//		
+//		//本のステータスを貸し出し中から貸し出し可能にする
+//		Book book = loan.getBook();
+//		book.setStatus(0);
+//		bookRepository.save(book);
+//
+//	}
 
 //	public boolean borrow(Integer userId, Integer bookId) {
 //		Book book = bookRepository.findById(bookId).orElseThrow();
