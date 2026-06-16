@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
-import axios from "axios"
 import { api } from "@/api"
 
 const router = useRouter()
@@ -10,9 +9,7 @@ const loans = ref([])
 /* 現在貸出中 */
 const fetchLoans = async () => {
   try {
-    const res = await api.get("/loans/current", {
-      withCredentials: true
-    })
+    const res = await api.get("/loans/current")
 
     loans.value = res.data.content ?? res.data
   } catch (e) {
@@ -23,11 +20,9 @@ const fetchLoans = async () => {
 /* 返却 */
 const returnBook = async (loanId) => {
   try {
-    await api.post(`/loan/${loanId}/return`, {}, {
-      withCredentials: true
-    })
+    await api.post(`/loan/${loanId}/return`, {})
 
-    await fetchLoans() // 画面更新
+    await fetchLoans()
   } catch (e) {
     console.error("返却失敗:", e)
   }
@@ -41,13 +36,12 @@ const logout = async () => {
   try {
     await api.post("/logout", {})
 
-    // ログイン画面へ戻す
     router.push("/")
-
   } catch (e) {
     console.error("logout失敗:", e)
   }
 }
+
 onMounted(fetchLoans)
 </script>
 
