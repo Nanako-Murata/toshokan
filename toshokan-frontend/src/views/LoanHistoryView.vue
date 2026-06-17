@@ -41,7 +41,6 @@ const logout = () => {
   router.push("/")
 }
 
-
 onMounted(fetchHistory)
 </script>
 
