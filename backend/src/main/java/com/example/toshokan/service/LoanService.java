@@ -30,92 +30,79 @@ public class LoanService {
 		this.bookRepository = bookRepository;
 		this.userRepository = userRepository;
 	}
-	
 
-    // ログイン中ユーザー取得
-    private User getLoginUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByName(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
+	// ログイン中ユーザー取得
+	private User getLoginUser() {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userRepository.findByName(username).orElseThrow(() -> new RuntimeException("User not found"));
+	}
 
-    // 現在貸し出し中（DTO返す）
-    public Page<LoanResponse> getCurrentLoans(Pageable pageable) {
+	// 現在貸し出し中（DTO返す）
+	public Page<LoanResponse> getCurrentLoans(Pageable pageable) {
 
-        User user = getLoginUser();
+		User user = getLoginUser();
 
-        return loanRepository
-                .findByUserAndReturnDateIsNull(user, pageable)
-                .map(l -> new LoanResponse(
-                        l.getId(),
-                        l.getBook().getTitle(),
-                        l.getBook().getAuthor(),
-                        l.getLoanDate()
-                ));
-    }
+		return loanRepository.findByUserAndReturnDateIsNull(user, pageable).map(l -> new LoanResponse(l.getId(),
+				l.getBook().getTitle(), l.getBook().getAuthor(), l.getLoanDate(), l.getDueDate()));
+	}
 
-    // 貸し出し履歴（DTO返す）
-    public Page<LoanResponse> getHistory(Pageable pageable) {
+	// 貸し出し履歴（DTO返す）
+	public Page<LoanResponse> getHistory(Pageable pageable) {
 
-        User user = getLoginUser();
+		User user = getLoginUser();
 
-        return loanRepository
-                .findByUserAndReturnDateIsNotNull(user, pageable)
-                .map(l -> new LoanResponse(
-                        l.getId(),
-                        l.getBook().getTitle(),
-                        l.getBook().getAuthor(),
-                        l.getLoanDate()
-                ));
-    }
+		return loanRepository.findByUserAndReturnDateIsNotNull(user, pageable).map(l -> new LoanResponse(l.getId(),
+				l.getBook().getTitle(), l.getBook().getAuthor(), l.getLoanDate(), l.getDueDate()));
+	}
 
-    // 貸し出し処理
-    @Transactional
-    public boolean borrowBook(Integer bookId) {
+	// 貸し出し処理
+	@Transactional
+	public boolean borrowBook(Integer bookId) {
 
-        User user = getLoginUser();
+		User user = getLoginUser();
 
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+		Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
 
-        if (book.getStatus() == 1) {
-            throw new RuntimeException("Already borrowed");
-        }
+		if (book.getStatus() == 1) {
+			throw new RuntimeException("Already borrowed");
+		}
 
-        Loan loan = new Loan();
-        loan.setUser(user);
-        loan.setBook(book);
-        loan.setLoanDate(LocalDate.now());
-        loan.setReturnDate(null);
+		Loan loan = new Loan();
+		loan.setUser(user);
+		loan.setBook(book);
+		loan.setLoanDate(LocalDate.now());
+		// 返却期限を貸出日の7日後に設定
+		loan.setDueDate(LocalDate.now().plusDays(7));
+		loan.setReturnDate(null);
 
-        loanRepository.save(loan);
+		loanRepository.save(loan);
 
-        book.setStatus(1);
-        bookRepository.save(book);
+		book.setStatus(1);
+		bookRepository.save(book);
 
-        return true;
-    }
+		return true;
+	}
 
-    // 返却処理
-    @Transactional
-    public void returnBook(Integer loanId) {
+	// 返却処理
+	@Transactional
+	public void returnBook(Integer loanId) {
 
-        User user = getLoginUser();
+		User user = getLoginUser();
 
-        Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new RuntimeException("Loan not found"));
+		Loan loan = loanRepository.findById(loanId).orElseThrow(() -> new RuntimeException("Loan not found"));
 
-        if (!loan.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized");
-        }
+		if (!loan.getUser().getId().equals(user.getId())) {
+			throw new RuntimeException("Unauthorized");
+		}
 
-        loan.setReturnDate(LocalDate.now());
-        loanRepository.save(loan);
+//実際の返却日
+		loan.setReturnDate(LocalDate.now());
+		loanRepository.save(loan);
 
-        Book book = loan.getBook();
-        book.setStatus(0);
-        bookRepository.save(book);
-    }
+		Book book = loan.getBook();
+		book.setStatus(0);
+		bookRepository.save(book);
+	}
 
 //	// ログイン中のユーザーを取得する
 //	private User getLoginUser() {

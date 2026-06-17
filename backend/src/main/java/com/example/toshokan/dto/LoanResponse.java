@@ -5,7 +5,9 @@ import java.time.LocalDate;
 public record LoanResponse(	Integer id,
 	    String title,
 	    String author,
-	    LocalDate loanDate
+	    LocalDate loanDate,
+	    //返却期限をっ追加
+	    LocalDate dueDate
 ) {
 
 }

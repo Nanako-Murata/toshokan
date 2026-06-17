@@ -33,6 +33,12 @@ public class Loan {
 	@Column(name="loan_date")
 	private LocalDate loanDate;
 	
+	//返却期限
+	//貸し出しの1週間後
+	@Column(name="due_date")
+	private LocalDate dueDate;
+	
+	//実際の返却日
 	@Column(name="return_date")
 	private LocalDate returnDate;
 }
