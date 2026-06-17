@@ -44,27 +44,6 @@ public class AuthController {
 	    return Map.of("token", token);
 	}
 
-		
-//		SecurityContext context = SecurityContextHolder.createEmptyContext();
-//		context.setAuthentication(auth);
-//		SecurityContextHolder.setContext(context);
-//
-//		HttpSession session = httpRequest.getSession(true);
-//
-//		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
-//
-//		// 🔥これが今回の本命
-//		session.setAttribute("LOGIN_USER", user);
-//
-//		return user;
-
-//spring security の標準ログアウトに切り替え
-//	@PostMapping("/logout")
-////	public ResponseEntity<?> logout(HttpSession session) {
-////		session.invalidate();
-////		return ResponseEntity.ok("logout success");
-////	}
-/// 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody LoginRequest request) {
 		try {
@@ -74,22 +53,5 @@ public class AuthController {
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(409).body(e.getMessage());
 		}
-
-//	@PostMapping("/signup")
-//	public void signup(@RequestBody LoginRequest request) {
-//		userService.signup(request.getName(), request.getPassword());
-//	}
-//	@PostMapping("/api/login")
-//	public ResponseEntity<?> login(@RequestBody LoginRequest req, HttpSession session) {
-//
-//		// 認証チェック（例）
-//		User user = userService.login(req.getName(), req.getPassword());
-//
-//		session.setAttribute("LOGIN_USER", user);
-//
-//		return ResponseEntity.ok("ok");
-//	}
-//
-
 	}
 }

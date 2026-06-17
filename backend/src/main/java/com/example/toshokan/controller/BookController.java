@@ -1,5 +1,7 @@
 package com.example.toshokan.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,24 +24,30 @@ public class BookController {
 		this.bookService = bookService;
 		this.bookRepository = bookRepository;
 	}
-	
+
 //	@GetMapping("/books")
 //	public List<Book> getBooks() {
 //		 System.out.println("🔥 BOOK CONTROLLER HIT");
 //	    return bookRepository.findAll();
 //	}
 
-	//本一覧を表示
+	// 本一覧を検索
+	@GetMapping("/books/search")
+	public Page<Book> search(@RequestParam String keyword, Pageable pageable) {
+		return bookService.search(keyword, pageable);
+	}
+
+	// 本の詳細を表示
+	@GetMapping("/books/{id}")
+	public Book getBook(@PathVariable Integer id) {
+		return bookRepository.findById(id).orElseThrow(() -> new RuntimeException("not found"));
+	}
+
+	// 本一覧を表示
 	@GetMapping("/books")
 	public Page<Book> getBooks(Pageable pageable) {
 		System.out.println("get all books");
 		return bookRepository.findAll(pageable);
-	}
-	
-	//本の詳細を表示
-	@GetMapping("/books/{id}")
-	public Book getBook(@PathVariable Integer id) {
-		return bookRepository.findById(id).orElseThrow(()->new RuntimeException("not found"));
 	}
 
 	// 新しい本を追加
@@ -47,12 +55,6 @@ public class BookController {
 	public Book create(@RequestBody Book book) {
 		book.setStatus(0);
 		return bookRepository.save(book);
-	}
-	
-	//本一覧を検索
-	@GetMapping("/books/search")
-	public Page<Book> search(@RequestParam String keyword, Pageable pageable){
-		return bookService.search(keyword, pageable);
 	}
 
 }
