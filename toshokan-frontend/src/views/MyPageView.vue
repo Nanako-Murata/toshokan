@@ -10,7 +10,6 @@ const loans = ref([])
 const fetchLoans = async () => {
   try {
     const res = await api.get("/loans/current")
-
     loans.value = res.data.content ?? res.data
   } catch (e) {
     console.error("取得失敗:", e)
@@ -21,7 +20,6 @@ const fetchLoans = async () => {
 const returnBook = async (loanId) => {
   try {
     await api.post(`/loan/${loanId}/return`, {})
-
     await fetchLoans()
   } catch (e) {
     console.error("返却失敗:", e)
@@ -35,6 +33,10 @@ const goHistory = () => router.push("/loans/history")
 const logout = () => {
   localStorage.removeItem("token")
   router.push("/")
+}
+const isOverdue = (dueDate) => {
+  if (!dueDate) return false
+  return new Date(dueDate) < new Date()
 }
 
 onMounted(fetchLoans)
@@ -55,17 +57,19 @@ onMounted(fetchLoans)
         <th>タイトル</th>
         <th>著者</th>
         <th>借りた日</th>
+        <th>返却期限</th>
         <th>操作</th>
       </tr>
 
       <tr v-for="l in loans" :key="l.id">
- <td>{{ l.title }}</td>
-<td>{{ l.author }}</td>
-<td>{{ l.loanDate }}</td>
+        <td>{{ l.title }}</td>
+        <td>{{ l.author }}</td>
+        <td>{{ l.loanDate }}</td>
+        <td :style="{ color: isOverdue(l.dueDate) ? 'red' : 'black' }">
+          {{ l.dueDate }}
+        </td>
         <td>
-          <button @click="returnBook(l.id)">
-            返却
-          </button>
+          <button @click="returnBook(l.id)">返却</button>
         </td>
       </tr>
     </table>

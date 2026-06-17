@@ -61,7 +61,6 @@ onMounted(fetchHistory)
         <th>タイトル</th>
         <th>著者</th>
         <th>貸出日</th>
-        <th>返却日</th>
       </tr>
 
       <tr v-for="l in loans" :key="l.id">

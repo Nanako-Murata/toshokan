@@ -10,13 +10,20 @@
       <input v-model="password" type="password" placeholder="パスワード" />
     </div>
 
+    <div>
+      <input v-model="email" type="email" placeholder="メールアドレス" />
+    </div>
+
     <button @click="signup">登録</button>
 
     <br /><br />
 
-    <!-- ⭐エラー表示（これ重要） -->
     <p v-if="errorMessage" style="color: red;">
       {{ errorMessage }}
+    </p>
+
+    <p v-if="successMessage" style="color: green;">
+      {{ successMessage }}
     </p>
 
     <br />
@@ -29,33 +36,33 @@
 
 <script setup>
 import { ref } from "vue"
-import axios from "axios"
 import { useRouter } from "vue-router"
 import { api } from "@/api"
-
 
 const router = useRouter()
 
 const name = ref("")
 const password = ref("")
+const email = ref("")
 const errorMessage = ref("")
+const successMessage = ref("")
 
 const signup = async () => {
   try {
     errorMessage.value = ""
+    successMessage.value = ""
 
+    await api.post("/api/signup", {
+      name: name.value,
+      password: password.value,
+      email: email.value
+    })
 
-await api.post("/api/signup", {
-  name: name.value,
-  password: password.value
-})
-    alert("登録完了")
-    router.push("/")
+    successMessage.value = "確認メールを送信しました。メールのリンクをタップして登録を完了してください。"
+
   } catch (e) {
     console.error("signup失敗:", e)
-
-    errorMessage.value =
-      e.response?.data || "この名前はすでに使われています"
+    errorMessage.value = e.response?.data || "新規登録に失敗しました"
   }
 }
 
