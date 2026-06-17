@@ -33,9 +33,10 @@ const goList = () => router.push("/books")
 const goHistory = () => router.push("/loans/history")
 
 const logout = async () => {
-  try {
-    await api.post("/logout", {})
-
+  try {const logout = () => {
+  localStorage.removeItem("token")
+  router.push("/")
+}
     router.push("/")
   } catch (e) {
     console.error("logout失敗:", e)
