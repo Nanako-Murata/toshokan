@@ -11,9 +11,10 @@ const currentPage = ref(0)
 const totalPages = ref(0)
 const totalElements = ref(0)
 
+/* ======================
+　本一覧（初期表示）
+====================== */
 const fetchBooks = async () => {
-  console.log("fetchBooks start")
-
   try {
     const res = await api.get("/books", {
       params: {
@@ -22,33 +23,86 @@ const fetchBooks = async () => {
       }
     })
 
-    console.log("BOOK RESPONSE:", res)
-    console.log("BOOK RESPONSE DATA:", res?.data)
-    console.log("BOOK RESPONSE CONTENT:", res?.data?.content)
-
-    const pageData = res?.data ?? res
-
-    books.value = pageData?.content ?? []
-    totalPages.value = pageData?.totalPages ?? 0
-    totalElements.value = pageData?.totalElements ?? 0
-
-    console.log("books.value:", books.value)
+    books.value = res.data.content
+    totalPages.value = res.data.totalPages
+    totalElements.value = res.data.totalElements
   } catch (e) {
     console.error("一覧取得失敗:", e)
   }
 }
-
+/* 初期表示 */
 onMounted(() => {
-  console.log("BookList mounted")
   fetchBooks()
 })
+
+
+/* ======================
+　検索
+====================== */
+const search = async () => {
+  try {
+    const res = await api.get("/books/search", {
+      params: { keyword: keyword.value }
+    })
+
+    books.value = res.data.content ?? res.data
+    currentPage.value = res.data.number
+    totalPages.value = res.data.totalPages
+    totalElements.value = res.data.totalElements
+
+  } catch (e) {
+    console.error("検索失敗:", e)
+  }
+}
+
+
+/* ======================
+　貸出
+====================== */
+const borrowBook = async (bookId) => {
+  try {
+    await api.post(`/book/${bookId}/borrow`)
+
+    await fetchBooks()
+
+  } catch (e) {
+    console.error("貸出失敗:", e)
+  }
+}
+
+
+/* ======================
+　画面遷移
+====================== */
+const goDetail = (id) => {
+  router.push(`/books/${id}`)
+}
+
+const goMyPage = () => {
+  router.push("/mypage")
+}
+
+const goRegister = () => {
+  router.push("/books/register")
+}
+
+
+/* ======================
+　ログアウト
+====================== */
+const logout = () => {
+  localStorage.removeItem("token")
+  router.push("/")
+}
+/* ======================
+   画面遷移
+====================== */
+
 </script>
 
 <template>
   <div>
     <h1>Book List</h1>
-    <p>books length: {{ books.length }}</p>
-
 
     <!-- 検索 -->
     <input v-model="keyword" placeholder="検索キーワード" />
