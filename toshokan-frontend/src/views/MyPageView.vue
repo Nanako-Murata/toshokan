@@ -32,15 +32,9 @@ const returnBook = async (loanId) => {
 const goList = () => router.push("/books")
 const goHistory = () => router.push("/loans/history")
 
-const logout = async () => {
-  try {const logout = () => {
+const logout = () => {
   localStorage.removeItem("token")
   router.push("/")
-}
-    router.push("/")
-  } catch (e) {
-    console.error("logout失敗:", e)
-  }
 }
 
 onMounted(fetchLoans)
