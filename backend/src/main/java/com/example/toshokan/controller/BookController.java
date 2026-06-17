@@ -1,7 +1,5 @@
 package com.example.toshokan.controller;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,18 +23,18 @@ public class BookController {
 		this.bookRepository = bookRepository;
 	}
 	
-	@GetMapping("/books")
-	public List<Book> getBooks() {
-		 System.out.println("🔥 BOOK CONTROLLER HIT");
-	    return bookRepository.findAll();
-	}
-
-//	//本一覧を表示
 //	@GetMapping("/books")
-//	public Page<Book> getBooks(Pageable pageable) {
-//		System.out.println("get all books");
-//		return bookRepository.findAll(pageable);
+//	public List<Book> getBooks() {
+//		 System.out.println("🔥 BOOK CONTROLLER HIT");
+//	    return bookRepository.findAll();
 //	}
+
+	//本一覧を表示
+	@GetMapping("/books")
+	public Page<Book> getBooks(Pageable pageable) {
+		System.out.println("get all books");
+		return bookRepository.findAll(pageable);
+	}
 	
 	//本の詳細を表示
 	@GetMapping("/books/{id}")
