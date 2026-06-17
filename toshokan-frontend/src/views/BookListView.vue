@@ -7,20 +7,29 @@ const router = useRouter()
 
 const books = ref([])
 const keyword = ref("")
+const currentPage = ref(0)
+const totalPages = ref(0)
+const totalElements = ref(0)
 
 /* ======================
 　本一覧（初期表示）
 ====================== */
 const fetchBooks = async () => {
   try {
-    const res = await api.get("/books")
-    console.log("BOOK RESPONSE:", res.data)
-    books.value = res.data.content ?? res.data
+    const res = await api.get("/books", {
+      params: {
+        page: currentPage.value,
+        size: 10
+      }
+    })
+
+    books.value = res.data.content
+    totalPages.value = res.data.totalPages
+    totalElements.value = res.data.totalElements
   } catch (e) {
     console.error("一覧取得失敗:", e)
   }
 }
-
 /* 初期表示 */
 onMounted(() => {
   fetchBooks()
@@ -33,11 +42,16 @@ onMounted(() => {
 const search = async () => {
   try {
     const res = await api.get("/books/search", {
-      params: { keyword: keyword.value }
+      params: {
+        keyword: keyword.value,
+        page: currentPage.value,
+        size: 10
+      }
     })
 
-    books.value = res.data.content ?? res.data
-
+    books.value = res.data.content
+    totalPages.value = res.data.totalPages
+    totalElements.value = res.data.totalElements
   } catch (e) {
     console.error("検索失敗:", e)
   }
