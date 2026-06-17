@@ -36,14 +36,11 @@ const goMyPage = () => {
 /* ======================
    ログアウト
 ====================== */
-const logout = async () => {
-  try {
-    await api.post("/logout", {}, { withCredentials: true })
-    router.push("/")
-  } catch (e) {
-    console.error("logout失敗:", e)
-  }
+const logout = () => {
+  localStorage.removeItem("token")
+  router.push("/")
 }
+
 
 onMounted(fetchHistory)
 </script>
