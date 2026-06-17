@@ -72,7 +72,6 @@ onMounted(fetchHistory)
   <td>{{ l.title }}</td>
   <td>{{ l.author }}</td>
   <td>{{ l.loanDate }}</td>
-  <td>未返却</td>
 </tr>
     </table>
   </div>
