@@ -23,13 +23,19 @@ const fetchBooks = async () => {
       }
     })
 
-    books.value = res.data.content
-    totalPages.value = res.data.totalPages
-    totalElements.value = res.data.totalElements
+    const pageData = res?.data ?? res
+
+    console.log("res =", res)
+    console.log("pageData =", pageData)
+
+    books.value = pageData?.content ?? []
+    totalPages.value = pageData?.totalPages ?? 0
+    totalElements.value = pageData?.totalElements ?? 0
   } catch (e) {
     console.error("一覧取得失敗:", e)
   }
 }
+
 /* 初期表示 */
 onMounted(() => {
   fetchBooks()
