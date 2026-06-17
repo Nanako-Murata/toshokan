@@ -56,5 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
 			System.out.println("NO BEARER TOKEN FOUND");
 			SecurityContextHolder.clearContext();
 		}
+		  filterChain.doFilter(request, response);
 	}
+	
 }
