@@ -42,7 +42,7 @@
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { api } from "@/api"
-
+const confirmPassword = ref("")  // ← 追加
 const router = useRouter()
 
 const name = ref("")
