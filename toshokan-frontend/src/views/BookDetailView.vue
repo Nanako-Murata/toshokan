@@ -115,11 +115,15 @@ onMounted(async () => {
     console.error("取得失敗:", err)
   }
 })
+
 const borrow = async (bookId) => {
   try {
     await api.post(`/book/${bookId}/borrow`)
     router.push("/books")
   } catch (e) {
+    if (e.response?.status === 500) {
+      alert(e.response?.data?.message ?? "貸出上限（5冊）に達しています")
+    }
     console.error("貸出失敗:", e)
   }
 }

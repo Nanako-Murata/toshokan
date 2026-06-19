@@ -68,14 +68,14 @@ const search = async () => {
 const borrowBook = async (bookId) => {
   try {
     await api.post(`/book/${bookId}/borrow`)
-
     await fetchBooks()
-
   } catch (e) {
+    if (e.response?.status === 500) {
+      alert(e.response?.data?.message ?? "貸出上限（5冊）に達しています")
+    }
     console.error("貸出失敗:", e)
   }
 }
-
 
 /* ======================
 　画面遷移
