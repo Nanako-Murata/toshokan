@@ -27,21 +27,15 @@
         </button>
 
       </form>
+<div class="link-buttons">
+  <button class="link" type="button" @click="goSignup">
+    Create account
+  </button>
 
-      <p v-if="errorMessage" style="color:red;">
-        {{ errorMessage }}
-      </p>
-
-      <button class="link" type="button" @click="goSignup">
-        Create account
-      </button>
-
-      &ensp;
-
-      <button class="link" type="button" @click="goPasswordReset">
-        パスワードを忘れた方はこちら
-      </button>
-
+  <button class="link" type="button" @click="goPasswordReset">
+    パスワードを忘れた方はこちら
+  </button>
+</div>
     </div>
   </div>
 </template>
@@ -93,3 +87,12 @@ const goPasswordReset = () => {
   router.push("/password-reset-request")
 }
 </script>
+
+<style scoped>
+.link-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+</style>
