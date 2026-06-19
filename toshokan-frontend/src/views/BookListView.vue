@@ -10,6 +10,7 @@ const keyword = ref("")
 const currentPage = ref(0)
 const totalPages = ref(0)
 const totalElements = ref(0)
+const menuOpen = ref(false)
 
 /* ======================
 　本一覧（初期表示）
@@ -99,22 +100,27 @@ const logout = () => {
 ====================== */
 
 </script>
-
 <template>
   <div>
-    <h1>Book List</h1>
+    <div class="header">
+      <h1>Book List</h1>
+
+      <!-- ハンバーガーメニュー -->
+      <div class="menu-wrapper">
+        <button class="hamburger" @click="menuOpen = !menuOpen">☰</button>
+        <div v-if="menuOpen" class="dropdown">
+          <button @click="goMyPage">マイページ</button>
+          <button @click="goRegister">本を追加</button>
+          <button @click="logout">ログアウト</button>
+        </div>
+      </div>
+    </div>
 
     <!-- 検索 -->
-    <input v-model="keyword" placeholder="検索キーワード" />
-    &ensp;
-    <button @click="search">検索</button>
-&ensp;
-    <!-- 操作ボタン -->
-    <button @click="logout">ログアウト</button>
-    &ensp;
-    <button @click="goMyPage">マイページ</button>
-    &ensp;
-    <button @click="goRegister">本を追加</button>
+    <div class="search-bar">
+      <input v-model="keyword" placeholder="検索キーワード" />
+      <button @click="search">検索</button>
+    </div>
 
     <table border="1">
       <tr>
@@ -125,24 +131,13 @@ const logout = () => {
       </tr>
 
       <tr v-for="b in books" :key="b.id">
-        <!-- 詳細画面へ -->
-<td @click="goDetail(b.id)" style="cursor:pointer;color:blue;">
-  {{ b.title }}
-</td>
-
-<td>
-  {{ b.author }}
-</td>
-
-<td>
-  {{ b.status === 0 ? "貸出可" : "貸出中" }}
-</td>
-
+        <td @click="goDetail(b.id)" style="cursor:pointer;color:blue;">
+          {{ b.title }}
+        </td>
+        <td>{{ b.author }}</td>
+        <td>{{ b.status === 0 ? "貸出可" : "貸出中" }}</td>
         <td>
-          <button
-            v-if="b.status === 0"
-            @click="borrowBook(b.id)"
-          >
+          <button v-if="b.status === 0" @click="borrowBook(b.id)">
             かりる
           </button>
         </td>
@@ -150,3 +145,55 @@ const logout = () => {
     </table>
   </div>
 </template>
+
+<style scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-wrapper {
+  position: relative;
+}
+
+.hamburger {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+  min-width: 120px;
+}
+
+.dropdown button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 4px 8px;
+}
+
+.dropdown button:hover {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+</style>
