@@ -6,7 +6,7 @@ public record LoanResponse(	Integer id,
 	    String title,
 	    String author,
 	    LocalDate loanDate,
-	    //返却期限をっ追加
+	    //返却期限を追加
 	    LocalDate dueDate
 ) {
 
