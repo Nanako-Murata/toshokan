@@ -56,7 +56,7 @@ onMounted(fetchHistory)
     </div>
 
     <!-- テーブル -->
-    <table border="1">
+    <table class="common-table">
       <tr>
         <th>タイトル</th>
         <th>著者</th>

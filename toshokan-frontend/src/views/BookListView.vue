@@ -119,7 +119,7 @@ const logout = () => {
       <button @click="search">検索</button>
     </div>
 
-    <table border="1">
+    <table class="common-table">
       <tr>
         <th>タイトル</th>
         <th>著者</th>
@@ -140,6 +140,7 @@ const logout = () => {
         </td>
       </tr>
     </table>
+
   </div>
 </template>
 
@@ -189,10 +190,10 @@ const logout = () => {
   white-space: nowrap;
 }
 .dropdown button:hover {
-  background-color: #f0f0f0;
+  background-color: var(--accent-light);
+  color: var(--accent-hover);
   border-radius: 4px;
 }
-
 .search-bar {
   display: flex;
   flex-direction: row;  /* ← 追加 */

@@ -52,7 +52,7 @@ onMounted(fetchLoans)
 
     <hr />
 
-    <table class="loan-table">
+    <table class="common-table">
       <tr>
         <th>タイトル</th>
         <th>著者</th>
@@ -76,27 +76,3 @@ onMounted(fetchLoans)
 
   </div>
 </template>
-
-<style scoped>
-.loan-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-}
-
-.loan-table th,
-.loan-table td {
-  border: 1px solid #ccc;
-  padding: 10px 16px;
-  text-align: left;
-}
-
-.loan-table th {
-  background-color: #f0f0f0;
-  font-weight: bold;
-}
-
-.loan-table tr:hover {
-  background-color: #f9f9f9;
-}
-</style>
