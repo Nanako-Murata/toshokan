@@ -183,8 +183,11 @@ const logout = () => {
   cursor: pointer;
   text-align: left;
   padding: 4px 8px;
+  color: #1f2937;        /* ← 追加：濃いテキスト色 */
+  font-size: 15px;       /* ← 追加：文字サイズ */
+  font-weight: 600;      /* ← 追加：少し太く */
+  white-space: nowrap;
 }
-
 .dropdown button:hover {
   background-color: #f0f0f0;
   border-radius: 4px;
