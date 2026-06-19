@@ -12,7 +12,6 @@
           placeholder="name"
           autocomplete="name"
         />
-        &ensp;
 
         <input
           v-model="password"
@@ -20,7 +19,6 @@
           placeholder="password"
           autocomplete="current-password"
         />
-        &ensp;
 
         <button type="submit">
           Login
@@ -32,15 +30,15 @@
         {{ errorMessage }}
       </p>
 
-      <button class="link" type="button" @click="goSignup">
-        Create account
-      </button>
+      <div class="link-buttons">
+        <button class="link" type="button" @click="goSignup">
+          Create account
+        </button>
 
-      &ensp;
-
-      <button class="link" type="button" @click="goPasswordReset">
-        パスワードを忘れた方はこちら
-      </button>
+        <button class="link" type="button" @click="goPasswordReset">
+          パスワードを忘れた方はこちら
+        </button>
+      </div>
 
     </div>
   </div>
@@ -88,7 +86,18 @@ const login = async () => {
 const goSignup = () => {
   router.push("/signup")
 }
+
 const goPasswordReset = () => {
   router.push("/password-reset-request")
 }
 </script>
+
+<style scoped>
+.link-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+</style>

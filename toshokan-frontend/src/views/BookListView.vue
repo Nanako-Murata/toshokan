@@ -98,7 +98,7 @@ const logout = () => {
 </script>
 
 <template>
-  <div>
+  <div style="width: 100%; max-width: 900px;">
     <div class="header">
       <h1>Book List</h1>
 
