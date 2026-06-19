@@ -8,11 +8,17 @@ import org.springframework.stereotype.Repository;
 import com.example.toshokan.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer>{	
+public interface UserRepository extends JpaRepository<User, Integer> {
 	public Optional<User> findByName(String name);
+
 	public boolean existsByName(String name);
-	
+
 	public boolean existsByEmail(String email);
+
 	Optional<User> findByVerifyToken(String token);
+
+	Optional<User> findByNameAndEmail(String name, String email);
+
+	Optional<User> findByPasswordResetToken(String passwordResetToken);
 
 }

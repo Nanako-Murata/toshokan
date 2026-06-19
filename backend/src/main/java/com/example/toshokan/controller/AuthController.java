@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.toshokan.dto.LoginRequest;
+import com.example.toshokan.dto.PasswordResetRequest;
+import com.example.toshokan.dto.PasswordUpdateRequest;
 import com.example.toshokan.dto.SignupRequest;
 import com.example.toshokan.entity.User;
 import com.example.toshokan.repository.UserRepository;
@@ -56,15 +58,33 @@ public class AuthController {
 			return ResponseEntity.status(409).body(e.getMessage());
 		}
 	}
-	
+
 	@GetMapping("/signup/verify")
-	public ResponseEntity<?> verify(@RequestParam String token){
+	public ResponseEntity<?> verify(@RequestParam String token) {
 		try {
 			userService.verify(token);
 			return ResponseEntity.ok("登録完了");
-			
-		}catch(IllegalArgumentException e) {
+
+		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(400).body(e.getMessage());
 		}
+	}
+
+	// to reset user's password
+	@PostMapping("/password-reset/request")
+	public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest request) {
+		userService.requestPasswordReset(request.getName(), request.getEmail());
+		return ResponseEntity.ok("メールを送信しました");
+
+	}
+
+	// パスワード更新本体
+	@PostMapping("/password-reset/update")
+	public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequest request) {
+		boolean result = userService.updatePassword(request.getToken(), request.getNewPassword());
+		if(!result) {
+			return ResponseEntity.status(400).body("無効なトークンです");
+		}
+		return ResponseEntity.ok("パスワードを更新しました");
 	}
 }

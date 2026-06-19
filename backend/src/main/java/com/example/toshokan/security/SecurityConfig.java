@@ -27,10 +27,12 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.logout(logout -> logout.disable()) 
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/login", "/api/signup/**").permitAll()
-						.anyRequest().authenticated())
+				.sessionManagement(
+						session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.logout(logout -> logout.disable())
+				.authorizeHttpRequests(
+						auth -> auth.requestMatchers("/api/login", "/api/signup/**", "/api/password-reset/request",
+								"/api/password-reset/update").permitAll().anyRequest().authenticated())
 				.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

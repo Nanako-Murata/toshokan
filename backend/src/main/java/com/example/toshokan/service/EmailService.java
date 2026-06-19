@@ -28,5 +28,14 @@ public class EmailService {
 		message.setText(text); // メッセージに本文をセット
 		mailSender.send(message);
 	}
+	
+	//to reset user's password
+	public void sendPasswordResetNotification(String email, String name, String resetUrl) {
+		SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setTo(email);
+		mail.setSubject("【図書館】パスワードリセットのご案内");
+		mail.setText(name + " さん\n\n以下のリンクからパスワードを再設定してください。\n\n" + resetUrl);
+		mailSender.send(mail);
+	}
 
 }

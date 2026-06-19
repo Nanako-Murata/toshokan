@@ -1,5 +1,6 @@
 package com.example.toshokan.service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -10,16 +11,21 @@ import org.springframework.stereotype.Service;
 import com.example.toshokan.entity.User;
 import com.example.toshokan.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JavaMailSender mailSender;
+	private final EmailService emailService;
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender,
+			EmailService emailService) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.mailSender=mailSender;
+		this.mailSender = mailSender;
+		this.emailService = emailService;
 	}
 
 //	public void signup(String name, String password) {
@@ -80,16 +86,56 @@ public class UserService {
 		mailSender.send(mail);
 
 	}
-	
+
 	public void verify(String token) {
-		User user = userRepository.findByVerifyToken(token).orElseThrow(() -> new IllegalArgumentException("無効なトークンです"));
-		if(user.isVerified()) {
+		User user = userRepository.findByVerifyToken(token)
+				.orElseThrow(() -> new IllegalArgumentException("無効なトークンです"));
+		if (user.isVerified()) {
 			throw new IllegalArgumentException("すでに認証済みです");
-			
+
 		}
 		user.setVerified(true);
 		user.setVerifyToken(null);
-		
+
 		userRepository.save(user);
+	}
+
+	// パスワード変更用method
+	@Transactional
+	public void requestPasswordReset(String name, String email) {
+		Optional<User> userOpt = userRepository.findByNameAndEmail(name, email);
+		if (userOpt.isEmpty()) {
+			return;
+		}
+		User user = userOpt.get();
+		String token = UUID.randomUUID().toString();
+		user.setPasswordResetToken(token);
+		String resetUrl = "http://localhost:5173/password-update?token=" + token;
+
+		try {
+			emailService.sendPasswordResetNotification(user.getEmail(), user.getName(), resetUrl);
+		} catch (Exception e) {
+			System.err.println("メール送信失敗" + e.getMessage());
+		}
+	}
+
+	/*
+	 * 新しいパスワードへの書き換え処理
+	 * 
+	 * @return
+	 * 
+	 */
+	@Transactional
+	public boolean updatePassword(String token, String newPassword) {
+		Optional<User> userOpt = userRepository.findByPasswordResetToken(token);
+		if (userOpt.isEmpty()) {
+			return false;
+
+		}
+		User user = userOpt.get();
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setPasswordResetToken(null);
+		userRepository.save(user);
+		return true;
 	}
 }

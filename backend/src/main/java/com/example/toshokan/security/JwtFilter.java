@@ -20,8 +20,12 @@ public class JwtFilter extends OncePerRequestFilter {
 		
 	    String path = request.getServletPath();
 	    System.out.println("SHOULD NOT FILTER PATH: " + path);
-	    return path.startsWith("/api/login") || path.startsWith("/api/signup") || path.equals("/login")
-	            || path.equals("/error");
+	    return path.startsWith("/api/login") || path.startsWith("/api/signup") 
+	            || path.equals("/error") || path.startsWith("/api/signup")
+	            || path.startsWith("/api/password-reset");
+ 
+//	    //たぶんいらない
+//	    //|| path.equals("/login")
 	}
 
 	@Override
