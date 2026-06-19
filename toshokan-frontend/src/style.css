@@ -37,9 +37,6 @@ body {
 /* ===== アプリ全体 ===== */
 #app {
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   padding: 50px 20px;
 }
 
