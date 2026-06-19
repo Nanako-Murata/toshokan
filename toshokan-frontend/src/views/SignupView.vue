@@ -7,7 +7,11 @@
     </div>
 
     <div>
-      <input v-model="password" type="password" placeholder="パスワード" />
+      <input v-model="password" type="password" placeholder="パスワード（6文字以上）" />
+    </div>
+
+    <div>
+      <input v-model="confirmPassword" type="password" placeholder="パスワード確認" />
     </div>
 
     <div>
@@ -43,6 +47,7 @@ const router = useRouter()
 
 const name = ref("")
 const password = ref("")
+const confirmPassword = ref("") // ← 追加
 const email = ref("")
 const errorMessage = ref("")
 const successMessage = ref("")
@@ -51,6 +56,63 @@ const signup = async () => {
   try {
     errorMessage.value = ""
     successMessage.value = ""
+
+    if (password.value.length < 6) {
+      errorMessage.value = "パスワードは6文字以上で入力してください"
+      return
+    }
+
+    if (password.value !== confirmPassword.value) {
+      errorMessage.value = "パスワードが一致しません"
+      return
+    }
+
+    await api.post("/api/signup", {
+      name: name.value,
+      password: password.value,
+      email: email.value
+    })
+
+    successMessage.value = "確認メールを送信しました。メールのリンクをタップして登録を完了してください。"
+
+  } catch (e) {
+    console.error("signup失敗:", e)
+    errorMessage.value = e.response?.data || "新規登録に失敗しました"
+  }
+}
+
+const goLogin = () => {
+  router.push("/")
+}
+</script>
+
+<script setup>
+import { ref } from "vue"
+import { useRouter } from "vue-router"
+import { api } from "@/api"
+
+const router = useRouter()
+
+const name = ref("")
+const password = ref("")
+const email = ref("")
+const errorMessage = ref("")
+const successMessage = ref("")
+
+const signup = async () => {
+  try {
+    errorMessage.value = ""
+    successMessage.value = ""
+
+    if (password.value.length < 6) {
+      errorMessage.value = "パスワードは6文字以上で入力してください"
+      return
+    }
+
+    if (password.value !== confirmPassword.value) {
+      errorMessage.value = "パスワードが一致しません"
+      return
+    }
 
     await api.post("/api/signup", {
       name: name.value,

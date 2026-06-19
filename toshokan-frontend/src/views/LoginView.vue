@@ -90,6 +90,6 @@ const goSignup = () => {
 }
 
 const goPasswordReset = () => {
-  router.push("/password-reset")
+  router.push("/password-reset-request")
 }
 </script>

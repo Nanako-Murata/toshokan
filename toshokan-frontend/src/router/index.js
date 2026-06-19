@@ -8,6 +8,8 @@ import MyPageView from "../views/MyPageView.vue"
 import LoanHistoryView from "../views/LoanHistoryView.vue"
 import BookRegisterView from "../views/BookRegisterView.vue"
 import VerifyView from "../views/VerifyView.vue"
+import PasswordResetRequestView from "../views/PasswordResetRequestView.vue"
+import PasswordUpdateView from "../views/PasswordUpdateView.vue"
 
 const routes = [
   { path: "/", component: LoginView },
@@ -18,6 +20,8 @@ const routes = [
   { path: "/books/register", component: BookRegisterView },
   { path: "/mypage", component: MyPageView },
   { path: "/loans/history", component: LoanHistoryView },
+  { path: "/password-reset-request", component: PasswordResetRequestView },
+  { path: "/password-update", component: PasswordUpdateView },
 ]
 
 export default createRouter({
