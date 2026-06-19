@@ -1,6 +1,6 @@
 <template>
+  <h1 class="app-title">図書館アプリ</h1>
   <div class="login-container">
-    <h1 class="app-title">図書館アプリ</h1>
     <div class="login-card">
 
       <h2>Login</h2>
@@ -129,6 +129,7 @@ const goPasswordReset = () => {
   gap: 8px;
   margin-top: 8px;
 }
+
 .app-title {
   font-size: 28px;
   color: var(--accent);
