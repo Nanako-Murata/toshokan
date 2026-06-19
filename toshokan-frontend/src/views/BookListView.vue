@@ -156,11 +156,13 @@ const logout = () => {
 
 .hamburger {
   font-size: 24px;
-  background: none;
+  background: var(--accent);
+  color: white;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
+  padding: 6px 12px;
 }
-
 .dropdown {
   position: absolute;
   right: 0;

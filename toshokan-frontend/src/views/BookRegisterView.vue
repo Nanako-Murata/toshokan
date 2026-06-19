@@ -1,5 +1,5 @@
-<template>
-  <div>
+vue<template>
+  <div class="register-container">
     <h1>本の追加</h1>
 
     <input v-model="title" placeholder="タイトル" />
@@ -7,10 +7,9 @@
     <input v-model="author" placeholder="著者" />
     <br/>
     <textarea v-model="detail" placeholder="詳細"></textarea>
-<br/>
+    <br/>
     <button @click="register">登録</button>
     <br/>
-
     <button @click="goList">一覧へ戻る</button>
   </div>
 </template>
@@ -48,3 +47,25 @@ const goList = () => {
   router.push("/books")
 }
 </script>
+
+<style scoped>
+.register-container {
+  width: 420px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input, textarea {
+  width: 100%;
+  max-width: 400px;
+}
+
+textarea {
+  height: 120px;
+  resize: vertical;
+}
+</style>
