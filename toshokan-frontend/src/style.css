@@ -158,3 +158,20 @@ button:active {
 .common-table tr:hover {
   background-color: #fffdf0;
 }
+
+/* ===== ページング ===== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pagination button:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

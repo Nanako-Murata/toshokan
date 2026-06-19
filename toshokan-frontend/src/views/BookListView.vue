@@ -12,6 +12,11 @@ const totalPages = ref(0)
 const totalElements = ref(0)
 const menuOpen = ref(false)
 
+const changePage = (page) => {
+  currentPage.value = page
+  fetchBooks()
+}
+
 /* ======================
 　本一覧（初期表示）
 ====================== */
@@ -140,6 +145,16 @@ const logout = () => {
         </td>
       </tr>
     </table>
+    <!-- テーブルの下に追加 -->
+<div class="pagination">
+  <button :disabled="currentPage === 0" @click="changePage(currentPage - 1)">
+    前へ
+  </button>
+  <span>{{ currentPage + 1 }} / {{ totalPages }}</span>
+  <button :disabled="currentPage + 1 >= totalPages" @click="changePage(currentPage + 1)">
+    次へ
+  </button>
+</div>
 
   </div>
 </template>
