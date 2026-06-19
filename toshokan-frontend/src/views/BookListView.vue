@@ -70,8 +70,8 @@ const borrowBook = async (bookId) => {
     await api.post(`/book/${bookId}/borrow`)
     await fetchBooks()
   } catch (e) {
-    if (e.response?.status === 500) {
-      alert(e.response?.data?.message ?? "貸出上限（5冊）に達しています")
+    if (e.response?.status === 400) {
+      alert(e.response?.data ?? "貸出できませんでした")
     }
     console.error("貸出失敗:", e)
   }
@@ -123,6 +123,10 @@ const logout = () => {
       <input v-model="keyword" placeholder="検索キーワード" />
       <button @click="search">検索</button>
     </div>
+
+    <p style="color: #f59e0b; font-weight: bold;">
+  ※ 一度に借りられるのは5冊までです
+</p>
 
     <table class="common-table">
       <tr>
