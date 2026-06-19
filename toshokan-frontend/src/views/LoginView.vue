@@ -101,3 +101,33 @@ const goPasswordReset = () => {
   margin-top: 8px;
 }
 </style>
+
+<style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 50px;
+}
+
+.login-card {
+  width: 420px;
+  max-width: 100%;
+  background: #ffffff;
+  border: 3px solid #fde68a;
+  border-radius: 32px;
+  padding: 36px;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.link-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+</style>
