@@ -95,11 +95,8 @@ const logout = () => {
   localStorage.removeItem("token")
   router.push("/")
 }
-/* ======================
-   画面遷移
-====================== */
-
 </script>
+
 <template>
   <div>
     <div class="header">
@@ -193,7 +190,17 @@ const logout = () => {
 
 .search-bar {
   display: flex;
+  flex-direction: row;  /* ← 追加 */
+  align-items: center;  /* ← 追加 */
   gap: 8px;
   margin: 16px 0;
+}
+
+.search-bar input {
+  width: 200px;  /* ← 追加：入力欄の幅を固定 */
+}
+.search-bar button {
+  padding: 10px 16px;  /* ← グローバルを上書き */
+  white-space: nowrap; /* ← 縦書き防止 */
 }
 </style>
