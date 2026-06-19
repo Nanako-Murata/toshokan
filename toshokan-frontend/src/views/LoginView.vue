@@ -1,5 +1,6 @@
 <template>
   <div class="login-container">
+    <h1 class="app-title">図書館アプリ</h1>
     <div class="login-card">
 
       <h2>Login</h2>
@@ -100,9 +101,7 @@ const goPasswordReset = () => {
   gap: 8px;
   margin-top: 8px;
 }
-</style>
 
-<style scoped>
 .login-container {
   display: flex;
   justify-content: center;
@@ -129,5 +128,11 @@ const goPasswordReset = () => {
   align-items: center;
   gap: 8px;
   margin-top: 8px;
+}
+.app-title {
+  font-size: 28px;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 8px;
 }
 </style>
