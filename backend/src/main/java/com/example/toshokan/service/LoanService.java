@@ -25,10 +25,14 @@ public class LoanService {
 
 	private UserRepository userRepository;
 
-	public LoanService(LoanRepository loanRepository, BookRepository bookRepository, UserRepository userRepository) {
+	private final EmailService emailService;
+
+	public LoanService(LoanRepository loanRepository, BookRepository bookRepository, UserRepository userRepository,
+			EmailService emailService) {
 		this.loanRepository = loanRepository;
 		this.bookRepository = bookRepository;
 		this.userRepository = userRepository;
+		this.emailService = emailService;
 	}
 
 	// ログイン中ユーザー取得
@@ -58,9 +62,7 @@ public class LoanService {
 	// 貸し出し処理
 	@Transactional
 	public boolean borrowBook(Integer bookId) {
-
 		User user = getLoginUser();
-
 		Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
 
 		if (book.getStatus() == 1) {
@@ -72,13 +74,24 @@ public class LoanService {
 		loan.setBook(book);
 		loan.setLoanDate(LocalDate.now());
 		// 返却期限を貸出日の7日後に設定
-		loan.setDueDate(LocalDate.now().plusDays(7));
+		LocalDate dueDate = LocalDate.now().plusDays(7);
+		loan.setDueDate(dueDate);
 		loan.setReturnDate(null);
 
 		loanRepository.save(loan);
 
 		book.setStatus(1);
 		bookRepository.save(book);
+		
+		//send a mail
+		try {
+			
+			emailService.sendBorrowNotification(user.getEmail(), user.getName(), book.getTitle(), dueDate);
+
+		}catch(Exception e) {
+			System.err.println("メール送信に失敗しました" + e.getMessage());
+			
+		}
 
 		return true;
 	}
