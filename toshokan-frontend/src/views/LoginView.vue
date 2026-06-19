@@ -14,16 +14,13 @@
         />
         &ensp;
 
-
         <input
           v-model="password"
           type="password"
           placeholder="password"
           autocomplete="current-password"
         />
-         &ensp;
-
-        
+        &ensp;
 
         <button type="submit">
           Login
@@ -31,12 +28,18 @@
 
       </form>
 
-     <p v-if="errorMessage" style="color:red;">
-  {{ errorMessage }}
-</p>
+      <p v-if="errorMessage" style="color:red;">
+        {{ errorMessage }}
+      </p>
 
       <button class="link" type="button" @click="goSignup">
         Create account
+      </button>
+
+      &ensp;
+
+      <button class="link" type="button" @click="goPasswordReset">
+        パスワードを忘れた方はこちら
       </button>
 
     </div>
@@ -53,6 +56,7 @@ const errorMessage = ref("")
 
 const name = ref("")
 const password = ref("")
+
 const login = async () => {
   try {
     errorMessage.value = ""
@@ -62,9 +66,6 @@ const login = async () => {
       password: password.value
     })
 
-    console.log("LOGIN RESPONSE:", res.data)
-
-    // ⭐ここに入れる
     const token =
       res.data.token ||
       res.data.jwt ||
@@ -75,12 +76,10 @@ const login = async () => {
     }
 
     localStorage.setItem("token", token)
-
     router.push("/books")
 
   } catch (e) {
     console.error("login失敗:", e)
-
     errorMessage.value =
       e.response?.data || "name, passwordが違います"
   }
@@ -88,5 +87,9 @@ const login = async () => {
 
 const goSignup = () => {
   router.push("/signup")
+}
+
+const goPasswordReset = () => {
+  router.push("/password-reset")
 }
 </script>
