@@ -75,7 +75,7 @@ public class UserService {
 		userRepository.save(user);
 
 		// 本登録用メール作成
-		String verifyUrl = "http://localhost:5173/signup/verify?token=" + token;
+		String verifyUrl = "https://toshokan-frontend.onrender.com/signup/verify?token=" + token;
 //		//デプロイ用
 //		String verifyUrl = "https://toshokan-frontend.onrender.com/signup/verify?token=" + token;
 		SimpleMailMessage mail = new SimpleMailMessage();
@@ -110,7 +110,7 @@ public class UserService {
 		User user = userOpt.get();
 		String token = UUID.randomUUID().toString();
 		user.setPasswordResetToken(token);
-		String resetUrl = "http://localhost:5173/password-update?token=" + token;
+		String resetUrl = "https://toshokan-frontend.onrender.com/password-update?token=" + token;
 
 		try {
 			emailService.sendPasswordResetNotification(user.getEmail(), user.getName(), resetUrl);
