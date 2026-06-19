@@ -16,4 +16,6 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
 
 	public Page<Loan> findByUserAndReturnDateIsNotNull(User user, Pageable pageable);
 
+	public long countByUserAndReturnDateIsNull(User user);
+
 }

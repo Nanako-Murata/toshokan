@@ -63,6 +63,13 @@ public class LoanService {
 	@Transactional
 	public boolean borrowBook(Integer bookId) {
 		User user = getLoginUser();
+		
+		//すでに借りている本が5冊であるとき、さらに貸し出すことはできない
+		long currentLoanCount = loanRepository.countByUserAndReturnDateIsNull(user);
+		if(currentLoanCount>=5) {
+			throw new RuntimeException("貸出上限 (5冊) に達しています");
+		}
+		
 		Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
 
 		if (book.getStatus() == 1) {
