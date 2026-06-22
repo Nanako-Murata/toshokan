@@ -2,40 +2,52 @@ package com.example.toshokan.service;
 
 import java.time.LocalDate;
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.CreateEmailOptions;
+
 @Service
-
 public class EmailService {
-	private final JavaMailSender mailSender;
 
-	public EmailService(JavaMailSender mailSender) {
-		this.mailSender = mailSender;
-	}
+    @Value("${resend.api.key}")
+    private String apiKey;
 
-	public void sendBorrowNotification(String toEmail, String userName, String bookTitle, LocalDate dueDate) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setTo(toEmail);
-		message.setSubject("【図書館アプリ】本の貸出完了のお知らせ");
+    // メール認証
+    public void sendVerificationEmail(String email, String name, String verifyUrl) throws ResendException {
+        Resend resend = new Resend(apiKey);
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from("onboarding@resend.dev")
+                .to(email)
+                .subject("【図書館】メールアドレスの確認")
+                .html("<p>" + name + " さん</p><p>以下のリンクをタップして会員登録を完了してください。</p><a href='" + verifyUrl + "'>認証する</a>")
+                .build();
+        resend.emails().send(params);
+    }
 
-		String text = String.format(
-				"%s 様\n\n" + "いつも図書館アプリをご利用いただきありがとうございます。\n" + "以下の本の貸出処理が完了しました。\n\n"
-						+ "----------------------------------------\n" + "■ 本のタイトル: %s\n" + "■ 返却期限日  : %s\n"
-						+ "----------------------------------------\n\n" + "期限内のご返却をお願いいたします。",
-				userName, bookTitle, dueDate.toString());
-		message.setText(text); // メッセージに本文をセット
-		mailSender.send(message);
-	}
-	
-	//to reset user's password
-	public void sendPasswordResetNotification(String email, String name, String resetUrl) {
-		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setTo(email);
-		mail.setSubject("【図書館】パスワードリセットのご案内");
-		mail.setText(name + " さん\n\n以下のリンクからパスワードを再設定してください。\n\n" + resetUrl);
-		mailSender.send(mail);
-	}
+    // パスワードリセット
+    public void sendPasswordResetNotification(String email, String name, String resetUrl) throws ResendException {
+        Resend resend = new Resend(apiKey);
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from("onboarding@resend.dev")
+                .to(email)
+                .subject("【図書館】パスワードリセットのご案内")
+                .html("<p>" + name + " さん</p><p>以下のリンクからパスワードを再設定してください。</p><a href='" + resetUrl + "'>リセットする</a>")
+                .build();
+        resend.emails().send(params);
+    }
 
+ // 貸出通知
+    public void sendBorrowNotification(String email, String name, String title, LocalDate dueDate) throws ResendException {
+        Resend resend = new Resend(apiKey);
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from("onboarding@resend.dev")
+                .to(email)
+                .subject("【図書館】貸出完了のお知らせ")
+                .html("<p>" + name + " さん</p><p>「" + title + "」を借りました。</p><p>返却期限：" + dueDate + "</p>")
+                .build();
+        resend.emails().send(params);
+    }
 }

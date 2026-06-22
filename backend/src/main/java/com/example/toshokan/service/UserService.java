@@ -3,7 +3,6 @@ package com.example.toshokan.service;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,11 @@ import jakarta.transaction.Transactional;
 public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final JavaMailSender mailSender;
 	private final EmailService emailService;
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender,
-			EmailService emailService) {
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.mailSender = mailSender;
 		this.emailService = emailService;
 	}
 
@@ -57,14 +53,13 @@ public class UserService {
 	public void signup(String name, String password, String email) {
 		if (userRepository.existsByName(name)) {
 			throw new IllegalArgumentException("この名前は登録済みです");
-
 		}
 		if (userRepository.existsByEmail(email)) {
 			throw new IllegalArgumentException("このメールアドレスは登録済みです");
 		}
+
 		String token = UUID.randomUUID().toString();
 
-		// verify falseで新規ユーザー作成 仮登録
 		User user = new User();
 		user.setName(name);
 		user.setPassword(passwordEncoder.encode(password));
@@ -74,17 +69,13 @@ public class UserService {
 
 		userRepository.save(user);
 
-		// 本登録用メール作成
 		String verifyUrl = "https://toshokan-frontend.onrender.com/signup/verify?token=" + token;
-//		//デプロイ用
-//		String verifyUrl = "https://toshokan-frontend.onrender.com/signup/verify?token=" + token;
-		SimpleMailMessage mail = new SimpleMailMessage();
-		mail.setTo(email);
-		mail.setSubject("図書館アプリ新規会員登録　メールアドレスの確認");
-		mail.setText("以下のリンクをクリックして会員登録を完了させてください \n\n" + verifyUrl);
 
-		mailSender.send(mail);
-
+		try {
+			emailService.sendVerificationEmail(email, name, verifyUrl);
+		} catch (Exception e) {
+			System.err.println("メール送信失敗: " + e.getMessage());
+		}
 	}
 
 	public void verify(String token) {
