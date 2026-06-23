@@ -44,7 +44,7 @@ public class UserService {
 		return user;
 	}
 
-	public void signup(String name, String password, String email) {
+	public void signup(String name, String password){
 	    if (userRepository.existsByName(name)) {
 	        throw new IllegalArgumentException("この名前は登録済みです");
 	    }

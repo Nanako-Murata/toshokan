@@ -51,7 +51,7 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
 	    try {
-	        userService.signup(request.getName(), request.getPassword(), request.getEmail());
+	        userService.signup(request.getName(), request.getPassword());
 	        return ResponseEntity.ok("登録が完了しました！ ログインしましょう！");
 	    } catch (IllegalArgumentException e) {
 	        return ResponseEntity.status(409).body(e.getMessage());
