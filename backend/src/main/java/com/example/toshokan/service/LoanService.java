@@ -90,16 +90,6 @@ public class LoanService {
 		book.setStatus(1);
 		bookRepository.save(book);
 		
-		//send a mail
-		try {
-			
-			emailService.sendBorrowNotification(user.getEmail(), user.getName(), book.getTitle(), dueDate);
-
-		}catch(Exception e) {
-			System.err.println("メール送信に失敗しました" + e.getMessage());
-			
-		}
-
 		return true;
 	}
 

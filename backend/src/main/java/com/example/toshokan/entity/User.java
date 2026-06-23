@@ -22,15 +22,15 @@ public class User {
 	
 	private String password;
 	
-	@Email
-	private String email;
-	
-	private boolean verified = false;
-	
-	//token for verify an account
-	private String verifyToken;
-	
-	//token for changing user's password
-	private String passwordResetToken;
+//	@Email
+//	private String email;
+//	
+//	private boolean verified = false;
+//	
+//	//token for verify an account
+//	private String verifyToken;
+//	
+//	//token for changing user's password
+//	private String passwordResetToken;
 
 }

@@ -50,41 +50,40 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-		try {
-			userService.signup(request.getName(), request.getPassword(), request.getEmail());
-			return ResponseEntity.ok("仮登録が完了しました。確認メールを送信しました。");
-
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(409).body(e.getMessage());
-		}
+	    try {
+	        userService.signup(request.getName(), request.getPassword(), request.getEmail());
+	        return ResponseEntity.ok("登録が完了しました！ ログインしましょう！");
+	    } catch (IllegalArgumentException e) {
+	        return ResponseEntity.status(409).body(e.getMessage());
+	    }
 	}
 
-	@GetMapping("/signup/verify")
-	public ResponseEntity<?> verify(@RequestParam String token) {
-		try {
-			userService.verify(token);
-			return ResponseEntity.ok("登録完了");
-
-		} catch (IllegalArgumentException e) {
-			return ResponseEntity.status(400).body(e.getMessage());
-		}
-	}
+//	@GetMapping("/signup/verify")
+//	public ResponseEntity<?> verify(@RequestParam String token) {
+//		try {
+//			userService.verify(token);
+//			return ResponseEntity.ok("登録完了");
+//
+//		} catch (IllegalArgumentException e) {
+//			return ResponseEntity.status(400).body(e.getMessage());
+//		}
+//	}
 
 	// to reset user's password
-	@PostMapping("/password-reset/request")
-	public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest request) {
-		userService.requestPasswordReset(request.getName(), request.getEmail());
-		return ResponseEntity.ok("メールを送信しました");
-
-	}
-
-	// パスワード更新本体
-	@PostMapping("/password-reset/update")
-	public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequest request) {
-		boolean result = userService.updatePassword(request.getToken(), request.getNewPassword());
-		if(!result) {
-			return ResponseEntity.status(400).body("無効なトークンです");
-		}
-		return ResponseEntity.ok("パスワードを更新しました");
-	}
+//	@PostMapping("/password-reset/request")
+//	public ResponseEntity<?> requestPasswordReset(@RequestBody PasswordResetRequest request) {
+//		userService.requestPasswordReset(request.getName(), request.getEmail());
+//		return ResponseEntity.ok("メールを送信しました");
+//
+//	}
+//
+//	// パスワード更新本体
+//	@PostMapping("/password-reset/update")
+//	public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequest request) {
+//		boolean result = userService.updatePassword(request.getToken(), request.getNewPassword());
+//		if(!result) {
+//			return ResponseEntity.status(400).body("無効なトークンです");
+//		}
+//		return ResponseEntity.ok("パスワードを更新しました");
+//	}
 }
