@@ -1,28 +1,37 @@
 <template>
-  <div>
-    <h1>Signup</h1>
-<input v-model="name" placeholder="お名前" />
-<input v-model="password" type="password" placeholder="パスワード（6文字以上）" />
-<input v-model="confirmPassword" type="password" placeholder="パスワード確認" />
+  <h1 class="app-title">図書館アプリ</h1>
+  <div class="login-container">
+    <div class="login-card">
 
+      <h2>新規登録</h2>
 
-    <button @click="signup">登録</button>
+      <form @submit.prevent="signup">
 
-    <br /><br />
+        <input v-model="name" type="text" placeholder="お名前" autocomplete="name" />
 
-    <p v-if="errorMessage" style="color: red;">
-      {{ errorMessage }}
-    </p>
+        <input v-model="password" type="password" placeholder="パスワード（6文字以上）" autocomplete="new-password" />
 
-    <p v-if="successMessage" style="color: green;">
-      {{ successMessage }}
-    </p>
+        <input v-model="confirmPassword" type="password" placeholder="パスワード確認" autocomplete="new-password" />
 
-    <br />
+        <button type="submit">登録</button>
 
-    <button @click="goLogin">
-      ログイン画面へ戻る
-    </button>
+      </form>
+
+      <p v-if="errorMessage" style="color: red;">
+        {{ errorMessage }}
+      </p>
+
+      <p v-if="successMessage" style="color: green;">
+        {{ successMessage }}
+      </p>
+
+      <div class="link-buttons">
+        <button class="link" type="button" @click="goLogin">
+          ログイン画面へ戻る
+        </button>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -70,3 +79,40 @@ const goLogin = () => {
   router.push("/")
 }
 </script>
+
+<style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 50px;
+}
+
+.login-card {
+  width: 420px;
+  max-width: 100%;
+  background: #ffffff;
+  border: 3px solid #fde68a;
+  border-radius: 32px;
+  padding: 36px;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-title {
+  font-size: 28px;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.link-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+</style>
