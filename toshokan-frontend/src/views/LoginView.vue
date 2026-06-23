@@ -7,19 +7,19 @@
 
       <form @submit.prevent="login">
 
-        <input
-          v-model="name"
-          type="text"
-          placeholder="name"
-          autocomplete="name"
-        />
+       <input
+  v-model="name"
+  type="text"
+  placeholder="お名前"
+  autocomplete="name"
+/>
 
-        <input
-          v-model="password"
-          type="password"
-          placeholder="password"
-          autocomplete="current-password"
-        />
+<input
+  v-model="password"
+  type="password"
+  placeholder="パスワード"
+  autocomplete="current-password"
+/>
 
         <button type="submit">
           Login
@@ -34,10 +34,6 @@
       <div class="link-buttons">
         <button class="link" type="button" @click="goSignup">
           Create account
-        </button>
-
-        <button class="link" type="button" @click="goPasswordReset">
-          パスワードを忘れた方はこちら
         </button>
       </div>
 
@@ -87,10 +83,6 @@ const login = async () => {
 const goSignup = () => {
   router.push("/signup")
 }
-
-const goPasswordReset = () => {
-  router.push("/password-reset-request")
-}
 </script>
 
 <style scoped>
@@ -120,14 +112,6 @@ const goPasswordReset = () => {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.link-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
 }
 
 .app-title {

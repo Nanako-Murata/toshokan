@@ -1,22 +1,10 @@
 <template>
   <div>
     <h1>Signup</h1>
+<input v-model="name" placeholder="お名前" />
+<input v-model="password" type="password" placeholder="パスワード（6文字以上）" />
+<input v-model="confirmPassword" type="password" placeholder="パスワード確認" />
 
-    <div>
-      <input v-model="name" placeholder="名前" />
-    </div>
-
-    <div>
-      <input v-model="password" type="password" placeholder="パスワード（6文字以上）" />
-    </div>
-
-    <div>
-      <input v-model="confirmPassword" type="password" placeholder="パスワード確認" />
-    </div>
-
-    <div>
-      <input v-model="email" type="email" placeholder="メールアドレス" />
-    </div>
 
     <button @click="signup">登録</button>
 
@@ -47,7 +35,6 @@ const router = useRouter()
 
 const name = ref("")
 const password = ref("")
-const email = ref("")
 const errorMessage = ref("")
 const successMessage = ref("")
 
@@ -72,7 +59,7 @@ const signup = async () => {
       email: email.value
     })
 
-    successMessage.value = "確認メールを送信しました。メールのリンクをタップして登録を完了してください。"
+    successMessage.value = "会員登録が完了しました"
 
   } catch (e) {
     console.error("signup失敗:", e)
