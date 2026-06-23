@@ -56,7 +56,6 @@ const signup = async () => {
     await api.post("/api/signup", {
       name: name.value,
       password: password.value,
-      email: email.value
     })
 
     successMessage.value = "会員登録が完了しました"
