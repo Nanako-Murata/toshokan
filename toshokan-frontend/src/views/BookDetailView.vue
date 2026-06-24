@@ -115,11 +115,10 @@ onMounted(async () => {
     console.error("取得失敗:", err)
   }
 })
-
-const borrowBook = async (bookId) => {
+const borrow = async (bookId) => {
   try {
     await api.post(`/book/${bookId}/borrow`)
-    await fetchBooks()
+    router.push("/books")
   } catch (e) {
     if (e.response?.status === 400) {
       alert(e.response?.data ?? "貸出できませんでした")
